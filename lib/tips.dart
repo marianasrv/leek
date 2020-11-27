@@ -14,15 +14,27 @@ class _RandomWordsState extends State<RandomWords> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _searchAndFilter());
+    return Scaffold(
+      body: Column(children: [
+        _searchAndFilter(),
+        Expanded(
+          flex: 8,
+          child: _buildSuggestions(),
+        ),
+      ]),
+    );
   }
 
   Widget _buildRow(WordPair pair) {
     final alreadySaved = _saved.contains(pair);
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(15),
       child: Card(
-        elevation: 8.0,
+        margin: EdgeInsets.fromLTRB(4, 10, 4, 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 5.0,
         child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.amber,
@@ -30,11 +42,15 @@ class _RandomWordsState extends State<RandomWords> {
             ),
             title: Text(
               "This is the tip title.",
-              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600),
             ),
             // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
 
-            subtitle: Text("26/11/2020", style: TextStyle(color: Colors.grey)),
+            subtitle: Text("26/11/2020",
+                style: TextStyle(color: Colors.grey, fontSize: 13)),
             trailing: Icon(Icons.keyboard_arrow_right,
                 color: Colors.grey, size: 30.0)),
       ),
@@ -43,7 +59,7 @@ class _RandomWordsState extends State<RandomWords> {
 
   Widget _buildSuggestions() {
     return ListView.builder(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(16.0, 10, 16, 10),
         itemBuilder: /*1*/ (context, i) {
           final index = i ~/ 2; /*3*/
           if (index >= _suggestions.length) {

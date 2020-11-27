@@ -5,6 +5,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'tips.dart';
+import 'calendar.dart';
 
 void main() => runApp(MyApp());
 
@@ -39,10 +40,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       'My Crops',
       style: optionStyle,
     ),
-    Text(
-      'Crops Calendar',
-      style: optionStyle,
-    ),
+    Calendar(),
     Text(
       'Plague Detector',
       style: optionStyle,
