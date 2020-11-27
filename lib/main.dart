@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'tips.dart';
 import 'calendar.dart';
+import 'plagueDetector.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,10 +42,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       style: optionStyle,
     ),
     Calendar(),
-    Text(
-      'Plague Detector',
-      style: optionStyle,
-    ),
+    PlagueDetector(),
     RandomWords(),
   ];
 
