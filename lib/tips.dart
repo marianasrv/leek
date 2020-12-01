@@ -15,7 +15,17 @@ class _RandomWordsState extends State<RandomWords> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        child: Icon(
+          Icons.add_rounded,
+          color: Color(0xFF3FAF73),
+          size: 40,
+        ),
+        onPressed: () {},
+      ),
       body: Column(children: [
+        _titleAndProfile(),
         _searchAndFilter(),
         Expanded(
           flex: 8,
@@ -59,7 +69,7 @@ class _RandomWordsState extends State<RandomWords> {
 
   Widget _buildSuggestions() {
     return ListView.builder(
-        padding: EdgeInsets.fromLTRB(16.0, 10, 16, 10),
+        padding: EdgeInsets.fromLTRB(16.0, 5, 16, 10),
         itemBuilder: /*1*/ (context, i) {
           final index = i ~/ 2; /*3*/
           if (index >= _suggestions.length) {
@@ -70,27 +80,90 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _searchAndFilter() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          flex: 6,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: TextField(
-              onChanged: (value) {
-                //filterSearchResults(value);
-              },
-              controller: editingController,
-              decoration: InputDecoration(
-                  isDense: true,
-                  hintText: "Search...",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+    return Column(children: [
+      Row(
+        children: <Widget>[
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
+              child: TextField(
+                onChanged: (value) {
+                  //filterSearchResults(value);
+                },
+                controller: editingController,
+                decoration: InputDecoration(
+                    isDense: true,
+                    hintText: "Search...",
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              ),
             ),
           ),
-        ),
-        Expanded(child: Icon(Icons.filter_list_alt))
+          Expanded(
+              child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 6.0,
+                      child: Row(children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(12, 10, 0, 10),
+                            child: Text("Filters",
+                                style: TextStyle(
+                                    color: Color(0xFF1A633C), fontSize: 13))),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                            child: Icon(
+                              Icons.filter_list_alt,
+                              color: Color(0xFF1A633C),
+                              size: 25,
+                            ))
+                      ]),
+                    ),
+                  )))
+        ],
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 30, top: 10),
+        child: Row(children: [
+          Text("All",
+              style: TextStyle(
+                  color: Color(0xFF1A633C),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700)),
+        ]),
+      )
+    ]);
+  }
+
+  Widget _titleAndProfile() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+            padding: EdgeInsets.only(left: 30, top: 20, bottom: 10, right: 20),
+            child: Text(
+              "Tips & Tricks",
+              style: TextStyle(
+                  color: Color(0xFF1A633C),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25),
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+            child: Column(children: [
+              Image.asset(
+                'images/050-sun.png',
+                width: 40,
+                fit: BoxFit.fitWidth,
+              ),
+            ])),
       ],
     );
   }

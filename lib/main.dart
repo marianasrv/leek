@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'tips.dart';
 import 'calendar.dart';
+import 'myCrops.dart';
 import 'plagueDetector.dart';
 
 void main() => runApp(MyApp());
@@ -34,13 +35,11 @@ class MyStatefulWidget extends StatefulWidget {
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
+
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   final List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'My Crops',
-      style: optionStyle,
-    ),
+    Crops(),
     Calendar(),
     PlagueDetector(),
     RandomWords(),
@@ -56,7 +55,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Leek'),
+        title: Text("Leek"),
         actions: [
           IconButton(
               icon: Icon(
@@ -86,7 +85,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.calendar_today,
+              Icons.calendar_today_rounded,
               size: 30,
             ),
             label: '',
