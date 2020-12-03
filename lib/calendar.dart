@@ -11,6 +11,8 @@ class _CalendarState extends State<Calendar> {
   final _suggestions = <WordPair>[];
   final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
+  bool  _typeHerbs = false;
+  bool  _typeVegetable = false;
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +119,102 @@ class _CalendarState extends State<Calendar> {
         }));
   }
 
-  Widget _searchAndFilter() {
+    void _showcontent() {
+    showDialog(
+        context: context, barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          var width = MediaQuery.of(context).size.width;
+          return new StatefulBuilder(
+            builder: (context, setState) {
+            return AlertDialog(
+            content: new Container(
+                height: 230.0,
+                width: width - 10,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                            child: Text(
+                              "Type of Crop",
+                              style: TextStyle(
+                                  color: Color(0xFF1A633C),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                          )),
+                          Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                              child: new RaisedButton(
+                                  child: new Text('Herbs',
+                                      style: TextStyle(
+                                          color:  _typeHerbs? Colors.white : Color(0xFF1A633C),
+                                          fontSize: 12)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Color(0xFF1A633C))
+                                  ),
+                                  color: _typeHerbs? Color(0xFF1A633C): Colors.white ,
+                                  onPressed: () => setState(() => _typeHerbs = !_typeHerbs),
+
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                              child: new RaisedButton(
+                                color: _typeVegetable? Color(0xFF1A633C): Colors.white ,
+                                child: new Text('Vegetable',
+                                        style: TextStyle(
+                                        color:  _typeVegetable? Colors.white : Color(0xFF1A633C) ,
+                                        fontSize: 12)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(color: Color(0xFF1A633C))
+                                ),
+                                onPressed: () => setState(() => _typeVegetable = !_typeVegetable),
+                              ),
+                            )
+                          ],
+
+                        )
+
+                      ]
+                    )
+                  ],
+                )
+              ),
+            actions: [
+              new FlatButton(
+                child: new Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          );
+          }
+        );
+        },
+      );
+    }
+
+    void _changeFilter(filter){
+
+      setState(() {
+        _typeVegetable = !_typeVegetable;
+      });
+
+
+    }
+
+    Widget _searchAndFilter() {
     return Column(children: [
       Row(
         children: <Widget>[
@@ -149,7 +246,9 @@ class _CalendarState extends State<Calendar> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       elevation: 6.0,
-                      child: Row(children: [
+                      child: GestureDetector(
+                          onTap: (){ _showcontent();},
+                          child: Row(children: [
                         Padding(
                             padding: EdgeInsets.fromLTRB(12, 10, 0, 10),
                             child: Text("Filters",
@@ -162,7 +261,8 @@ class _CalendarState extends State<Calendar> {
                               color: Color(0xFF1A633C),
                               size: 25,
                             ))
-                      ]),
+                      ],
+                      )),
                     ),
                   )))
         ],
