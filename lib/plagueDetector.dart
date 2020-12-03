@@ -20,7 +20,10 @@ class _PlagueDetectorState extends State<PlagueDetector> {
             color: Color(0xFF3FAF73),
             size: 35,
           ),
-          onPressed: () {},
+          onPressed: () {
+            _imgFromCamera();
+            Navigator.of(context).pop();
+          },
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -28,6 +31,7 @@ class _PlagueDetectorState extends State<PlagueDetector> {
           children: [
             _titleAndProfile(),
             _buildCard(),
+            _image == null? Text('not loaded') : Text('loaded')
           ],
         ));
   }
@@ -54,7 +58,7 @@ class _PlagueDetectorState extends State<PlagueDetector> {
                               color: Color(0xFF3FAF73), size: 30),
                           onPressed: () {
                             _imgFromGallery();
-                            Navigator.of(context).pop();
+
                           },
                         ),
                       ],
@@ -119,12 +123,16 @@ class _PlagueDetectorState extends State<PlagueDetector> {
     );
   }
 
-  _imgFromCamera() async {
-    File image = await ImagePicker.pickImage(
-        source: ImageSource.camera, imageQuality: 50);
+  Future _imgFromCamera() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _image = image;
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
     });
   }
 
