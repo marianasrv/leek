@@ -35,6 +35,8 @@ dependencies:
 
   sticky_headers: ^0.1.7
 
+  percent_indicator: "^2.1.7+2"
+
   #picks the image from the camera roll
   image_picker: ^0.6.6+5
 
