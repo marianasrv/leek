@@ -83,7 +83,11 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget _buildCard(int index) {
-    return ClipRRect(
+    return GestureDetector(
+        onTap: () {
+        _showVegetablePage();
+        },
+        child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Card(
           margin: EdgeInsets.fromLTRB(4, 0, 4, 8),
@@ -141,7 +145,7 @@ class _CalendarState extends State<Calendar> {
               )
             ],
           ),
-        ));
+        )));
   }
 
   Widget _buildCrops() {
@@ -162,7 +166,7 @@ class _CalendarState extends State<Calendar> {
     showDialog(
         context: context,
         builder: (context) {
-          return StatefulBuilder(builder: (context, setStateForDialog) {
+          return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               insetPadding: EdgeInsets.zero,
               backgroundColor: Colors.transparent,
@@ -175,8 +179,8 @@ class _CalendarState extends State<Calendar> {
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       itemCount: 12,
                       itemBuilder: (BuildContext context, int index) {
-                        return _buildMonth(_months[index]);
-                      }),
+                      return _buildMonth(_months[index], context);}
+                      ),
                 ),
                 margin: EdgeInsets.fromLTRB(width - 80, height - 660, 10, 80),
                 height: 400,
@@ -191,18 +195,159 @@ class _CalendarState extends State<Calendar> {
         });
   }
 
-  Widget _buildMonth(String month) {
-    return ListTile(
-      dense: true,
-      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-      title: Text(month,
+  void _showVegetablePage(){
+
+    showDialog(
+        context: context, barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+      var width = MediaQuery.of(context).size.width;
+      return new StatefulBuilder(builder: (context, setState)
+      {
+        return AlertDialog(
+            content: new Container(
+                height: 350.0,
+                width: width - 10,
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children:[
+                         Padding(
+                                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                child: Column(children: [
+                                  Image.asset(
+                                    'images/050-sun.png',
+                                    width: 50,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                          ])),
+
+                          FlatButton(
+                              padding: EdgeInsets.fromLTRB(80, 0, 0, 0),
+                              child: Icon(
+                              Icons.close_rounded,
+                                size: 30,
+                                color: Color(0xFF1A633C),
+                              ),
+                              onPressed: () {
+                              Navigator.of(context).pop();
+                              },
+                          )
+                    ]
+
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
+                            child: Text(
+                              "Crop Name",
+                              style: TextStyle(
+                                  color: Color(0xFF1A633C),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            )),
+                      ),
+                    ]
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: Padding(
+                              padding: EdgeInsets.fromLTRB(0, 2, 40, 0),
+                              child: Text(
+                                "Estimated time:",
+                                style: TextStyle(
+                                    color: Color(0xFF1A633C),
+                                    fontSize: 12),
+                              )),
+                        ),
+                      ]
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: Padding(
+                              padding: EdgeInsets.fromLTRB(0, 2, 0, 10),
+                              child: Text(
+                                "time",
+                                style: TextStyle(
+                                    color: Color(0xFF1A633C),
+                                    fontSize: 12),
+                              )),
+                        ),
+                      ]
+                  ),
+                  Divider(
+                    height:1,
+                    thickness:1,
+                    color: Color(0xFF1A633C),
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: Padding(
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: Text(
+                                "Description",
+                                style: TextStyle(
+                                    color: Color(0xFF1A633C),
+                                    fontSize: 12),
+                              )),
+                        ),
+                      ]
+                  ),
+                  Spacer(),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: new RaisedButton(
+                            child: new Text('Add to my Crops',
+                                style: TextStyle(
+                                    color:  Colors.white,
+                                    fontSize: 12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                    color:  Color(0xFF1A633C))),
+                            color:  Color(0xFF1A633C),
+                            onPressed: () {
+                            Navigator.of(context).pop();
+
+                            }),
+                  ))
+                  ]
+            )),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        );
+      }
+      );}
+      );}
+
+  Widget _buildMonth(String month, context) {
+      return ListTile(
+        dense: true,
+        visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+        title: Text(month,
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr,
           style: TextStyle(
             color: Color(0xFF3FAF73),
             fontSize: 16,
             fontWeight:
-                _currentMonth == month ? FontWeight.w800 : FontWeight.w500,
+                _currentMonth == month ? FontWeight.w900 : FontWeight.w500,
           )),
       onTap: () {
         setState(() => _currentMonth = month);
@@ -570,12 +715,6 @@ class _CalendarState extends State<Calendar> {
         });
       },
     );
-  }
-
-  void _changeFilter(filter) {
-    setState(() {
-      _typeVegetable = !_typeVegetable;
-    });
   }
 
   Widget _searchAndFilter() {
