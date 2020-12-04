@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class Crops extends StatefulWidget {
   @override
@@ -41,7 +42,7 @@ class _CropsState extends State<Crops> {
       itemBuilder: (context, index) {
         return new StickyHeader(
           header: Container(
-            color: Colors.white,
+            color: Color(0xFFFAFAFA),
             padding: EdgeInsets.fromLTRB(20, 5, 10, 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -79,19 +80,24 @@ class _CropsState extends State<Crops> {
                 mainAxisSpacing: 20,
               ),
               itemBuilder: (contxt, indx) {
-                return Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Color(0xFF1A633C)),
-                  ),
-                  //elevation: 8.0,
-                  child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                      child: Image.asset(
-                        'images/050-sun.png',
-                        // width: 10,
-                      )),
-                );
+                return CircularPercentIndicator(
+                    radius: 90,
+                    percent: 0.4,
+                    backgroundColor: Colors.transparent,
+                    progressColor: Color(0xFF3FAF73),
+                    center: Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Color(0xFF1A633C)),
+                      ),
+                      child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Image.asset(
+                            'images/050-sun.png',
+                            // width: 10,
+                          )),
+                    ));
               },
             ),
           ),

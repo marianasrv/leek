@@ -17,8 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Leek',
       theme: ThemeData(
-        primaryColor: Color(0xFF3FAF73),
-      ),
+          primaryColor: Color(0xFF3FAF73), backgroundColor: Color(0xFFFAFAFA)),
       home: MyStatefulWidget(),
     );
   }
