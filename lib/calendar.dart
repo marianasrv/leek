@@ -30,7 +30,6 @@ class _CalendarState extends State<Calendar> {
   bool _typeHerbs = false;
   bool _typeVegetable = false;
   bool _typeFruit = false;
-  bool _isDisabled = true;
   bool _isEasy = false;
   bool _isMedium = false;
   bool _isHard = false;
@@ -41,43 +40,75 @@ class _CalendarState extends State<Calendar> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
-          child:
-              // _isMonthsOpen
-              //     ? Center(
-              //         child: Icon(
-              //         Icons.close_rounded,
-              //         color: Color(0xFF3FAF73),
-              //         size: 40,
-              //       ))
-              //     :
-              Column(children: [
-            Padding(
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Icon(
-                  Icons.calendar_today_rounded,
+          child: _isMonthsOpen
+              ? Center(
+                  child: Icon(
+                  Icons.close_rounded,
                   color: Color(0xFF3FAF73),
-                  size: 25,
-                )),
-            Text(_currentMonth,
-                style: TextStyle(
-                    color: Color(0xFF3FAF73),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600))
-          ]),
+                  size: 40,
+                ))
+              : Column(children: [
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                      child: Icon(
+                        Icons.calendar_today_rounded,
+                        color: Color(0xFF3FAF73),
+                        size: 25,
+                      )),
+                  Text(_currentMonth,
+                      style: TextStyle(
+                          color: Color(0xFF3FAF73),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600))
+                ]),
           onPressed: () {
             //_isMonthsOpen ? Navigator.of(context).pop() :
-            _monthsWindow();
+            //_monthsWindow();
             setState(() => _isMonthsOpen = !_isMonthsOpen);
           },
         ),
-        body: Column(
+        body: Stack(
           children: [
-            _titleAndProfile(),
-            _searchAndFilter(),
-            Expanded(
-              flex: 8,
-              child: _buildCrops(),
-            ),
+            Column(children: [
+              _titleAndProfile(),
+              _searchAndFilter(),
+              Expanded(
+                flex: 8,
+                child: _buildCrops(),
+              ),
+            ]),
+            _isMonthsOpen
+                ? Container(
+                    margin: EdgeInsets.fromLTRB(325, 240, 10, 70),
+                    width: 100,
+                    height: 400,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Card(
+                        elevation: 2.0,
+                        //margin: EdgeInsets.fromLTRB(1, 0, 1, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                  itemCount: 12,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return _buildMonth(_months[index], context);
+                                  }),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    alignment: Alignment.centerRight,
+                  )
+                : Container()
           ],
         ));
   }
@@ -85,67 +116,69 @@ class _CalendarState extends State<Calendar> {
   Widget _buildCard(int index) {
     return GestureDetector(
         onTap: () {
-        _showVegetablePage();
+          _showVegetablePage();
         },
         child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Card(
-          margin: EdgeInsets.fromLTRB(4, 0, 4, 8),
-          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 5.0,
-          child: Column(
-            children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Padding(
-                    padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
-                    child: Column(children: [
-                      Image.asset(
-                        'images/050-sun.png',
-                        width: 40,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ])),
-                Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.add_circle_outline_rounded,
-                          color: Color(0xFF3FAF73),
-                          size: 30,
-                        )
-                      ],
-                    )),
-              ]),
-              Padding(
-                padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: Row(
-                  children: [
-                    Text(
-                      "CropName",
-                      style: TextStyle(
-                          color: Color(0xFF1A633C),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17),
-                    ),
-                  ],
-                ),
+            child: Card(
+              margin: EdgeInsets.fromLTRB(4, 0, 4, 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
-                child: Row(
-                  children: [
-                    Text("26/11/2020",
-                        style:
-                            TextStyle(color: Color(0xFF1A633C), fontSize: 13))
-                  ],
-                ),
-              )
-            ],
-          ),
-        )));
+              elevation: 5.0,
+              child: Column(
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+                            child: Column(children: [
+                              Image.asset(
+                                'images/050-sun.png',
+                                width: 40,
+                                fit: BoxFit.fitWidth,
+                              ),
+                            ])),
+                        Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.add_circle_outline_rounded,
+                                  color: Color(0xFF3FAF73),
+                                  size: 30,
+                                )
+                              ],
+                            )),
+                      ]),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: Row(
+                      children: [
+                        Text(
+                          "CropName",
+                          style: TextStyle(
+                              color: Color(0xFF1A633C),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+                    child: Row(
+                      children: [
+                        Text("26/11/2020",
+                            style: TextStyle(
+                                color: Color(0xFF1A633C), fontSize: 13))
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )));
   }
 
   Widget _buildCrops() {
@@ -179,8 +212,8 @@ class _CalendarState extends State<Calendar> {
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       itemCount: 12,
                       itemBuilder: (BuildContext context, int index) {
-                      return _buildMonth(_months[index], context);}
-                      ),
+                        return _buildMonth(_months[index], context);
+                      }),
                 ),
                 margin: EdgeInsets.fromLTRB(width - 80, height - 660, 10, 80),
                 height: 400,
@@ -195,152 +228,11 @@ class _CalendarState extends State<Calendar> {
         });
   }
 
-  void _showVegetablePage(){
-
-    showDialog(
-        context: context, barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-      var width = MediaQuery.of(context).size.width;
-      return new StatefulBuilder(builder: (context, setState)
-      {
-        return AlertDialog(
-            content: new Container(
-                height: 350.0,
-                width: width - 10,
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:[
-                         Padding(
-                                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                child: Column(children: [
-                                  Image.asset(
-                                    'images/050-sun.png',
-                                    width: 50,
-                                    fit: BoxFit.fitWidth,
-                                  ),
-                          ])),
-
-                          FlatButton(
-                              padding: EdgeInsets.fromLTRB(80, 0, 0, 0),
-                              child: Icon(
-                              Icons.close_rounded,
-                                size: 30,
-                                color: Color(0xFF1A633C),
-                              ),
-                              onPressed: () {
-                              Navigator.of(context).pop();
-                              },
-                          )
-                    ]
-
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 6,
-                        child: Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
-                            child: Text(
-                              "Crop Name",
-                              style: TextStyle(
-                                  color: Color(0xFF1A633C),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            )),
-                      ),
-                    ]
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 6,
-                          child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 2, 40, 0),
-                              child: Text(
-                                "Estimated time:",
-                                style: TextStyle(
-                                    color: Color(0xFF1A633C),
-                                    fontSize: 12),
-                              )),
-                        ),
-                      ]
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 6,
-                          child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 2, 0, 10),
-                              child: Text(
-                                "time",
-                                style: TextStyle(
-                                    color: Color(0xFF1A633C),
-                                    fontSize: 12),
-                              )),
-                        ),
-                      ]
-                  ),
-                  Divider(
-                    height:1,
-                    thickness:1,
-                    color: Color(0xFF1A633C),
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 6,
-                          child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                              child: Text(
-                                "Description",
-                                style: TextStyle(
-                                    color: Color(0xFF1A633C),
-                                    fontSize: 12),
-                              )),
-                        ),
-                      ]
-                  ),
-                  Spacer(),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: new RaisedButton(
-                            child: new Text('Add to my Crops',
-                                style: TextStyle(
-                                    color:  Colors.white,
-                                    fontSize: 12)),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(
-                                    color:  Color(0xFF1A633C))),
-                            color:  Color(0xFF1A633C),
-                            onPressed: () {
-                            Navigator.of(context).pop();
-
-                            }),
-                  ))
-                  ]
-            )),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-        );
-      }
-      );}
-      );}
-
   Widget _buildMonth(String month, context) {
-      return ListTile(
-        dense: true,
-        visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-        title: Text(month,
+    return ListTile(
+      dense: true,
+      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+      title: Text(month,
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr,
           style: TextStyle(
@@ -353,6 +245,136 @@ class _CalendarState extends State<Calendar> {
         setState(() => _currentMonth = month);
       },
     );
+  }
+
+  void _showVegetablePage() {
+    showDialog(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          var width = MediaQuery.of(context).size.width;
+          return new StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              content: new Container(
+                  height: 350.0,
+                  width: width - 10,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                  child: Column(children: [
+                                    Image.asset(
+                                      'images/050-sun.png',
+                                      width: 50,
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ])),
+                              FlatButton(
+                                padding: EdgeInsets.fromLTRB(80, 0, 0, 0),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: 30,
+                                  color: Color(0xFF1A633C),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ]),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 6,
+                                child: Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
+                                    child: Text(
+                                      "Crop Name",
+                                      style: TextStyle(
+                                          color: Color(0xFF1A633C),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20),
+                                    )),
+                              ),
+                            ]),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 6,
+                                child: Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 2, 40, 0),
+                                    child: Text(
+                                      "Estimated time:",
+                                      style: TextStyle(
+                                          color: Color(0xFF1A633C),
+                                          fontSize: 12),
+                                    )),
+                              ),
+                            ]),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 6,
+                                child: Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 2, 0, 10),
+                                    child: Text(
+                                      "time",
+                                      style: TextStyle(
+                                          color: Color(0xFF1A633C),
+                                          fontSize: 12),
+                                    )),
+                              ),
+                            ]),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Color(0xFF1A633C),
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 6,
+                                child: Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    child: Text(
+                                      "Description",
+                                      style: TextStyle(
+                                          color: Color(0xFF1A633C),
+                                          fontSize: 12),
+                                    )),
+                              ),
+                            ]),
+                        Spacer(),
+                        Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: new RaisedButton(
+                                  child: new Text('Add to my Crops',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side:
+                                          BorderSide(color: Color(0xFF1A633C))),
+                                  color: Color(0xFF1A633C),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }),
+                            ))
+                      ])),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            );
+          });
+        });
   }
 
   void _showcontent() {
@@ -471,15 +493,6 @@ class _CalendarState extends State<Calendar> {
                                     : Colors.white,
                                 onPressed: () => {
                                       setState(() => _typeHerbs = !_typeHerbs),
-                                      if (!_isEasy &&
-                                          !_isMedium &&
-                                          !_isHard &&
-                                          !_typeFruit &&
-                                          !_typeHerbs &&
-                                          !_typeVegetable)
-                                        {_isDisabled = true}
-                                      else
-                                        {_isDisabled = false}
                                     }),
                           ),
                           Padding(
@@ -503,15 +516,6 @@ class _CalendarState extends State<Calendar> {
                                 onPressed: () => {
                                       setState(() =>
                                           _typeVegetable = !_typeVegetable),
-                                      if (!_isEasy &&
-                                          !_isMedium &&
-                                          !_isHard &&
-                                          !_typeFruit &&
-                                          !_typeHerbs &&
-                                          !_typeVegetable)
-                                        {_isDisabled = true}
-                                      else
-                                        {_isDisabled = false}
                                     }),
                           ),
                           Padding(
@@ -534,15 +538,6 @@ class _CalendarState extends State<Calendar> {
                                             : Color(0xFF707070))),
                                 onPressed: () => {
                                       setState(() => _typeFruit = !_typeFruit),
-                                      if (!_isEasy &&
-                                          !_isMedium &&
-                                          !_isHard &&
-                                          !_typeFruit &&
-                                          !_typeHerbs &&
-                                          !_typeVegetable)
-                                        {_isDisabled = true}
-                                      else
-                                        {_isDisabled = false}
                                     }),
                           )
                         ],
@@ -593,15 +588,6 @@ class _CalendarState extends State<Calendar> {
                                             _isHard = !_isHard,
                                           }
                                       }),
-                                  if (!_isEasy &&
-                                      !_isMedium &&
-                                      !_isHard &&
-                                      !_typeFruit &&
-                                      !_typeHerbs &&
-                                      !_typeVegetable)
-                                    {_isDisabled = true}
-                                  else
-                                    {_isDisabled = false}
                                 },
                               )),
                           Padding(
@@ -634,15 +620,6 @@ class _CalendarState extends State<Calendar> {
                                                 _isHard = !_isHard,
                                               }
                                           }),
-                                      if (!_isEasy &&
-                                          !_isMedium &&
-                                          !_isHard &&
-                                          !_typeFruit &&
-                                          !_typeHerbs &&
-                                          !_typeVegetable)
-                                        {_isDisabled = true}
-                                      else
-                                        {_isDisabled = false}
                                     }),
                           ),
                           Padding(
@@ -675,15 +652,6 @@ class _CalendarState extends State<Calendar> {
                                                   _isMedium = !_isMedium,
                                                 }
                                             }),
-                                        if (!_isEasy &&
-                                            !_isMedium &&
-                                            !_isHard &&
-                                            !_typeFruit &&
-                                            !_typeHerbs &&
-                                            !_typeVegetable)
-                                          {_isDisabled = true}
-                                        else
-                                          {_isDisabled = false}
                                       }))
                         ],
                       )
@@ -696,17 +664,12 @@ class _CalendarState extends State<Calendar> {
                         style: TextStyle(color: Colors.white, fontSize: 12)),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(
-                            color: _isDisabled
-                                ? Color(0x803FAF73)
-                                : Color(0xFF3FAF73))),
+                        side: BorderSide(color: Color(0xFF3FAF73))),
                     color: Color(0xFF3FAF73),
                     disabledColor: Color(0x803FAF73),
-                    onPressed: _isDisabled
-                        ? null
-                        : () {
-                            Navigator.of(context).pop();
-                          },
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   )),
             ],
             shape: RoundedRectangleBorder(
