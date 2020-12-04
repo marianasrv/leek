@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "119412025064",
+    "project_id": "leek-1ef08",
+    "storage_bucket": "leek-1ef08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119412025064:android:04e62c43441ecbfdf30b5d",
+        "android_client_info": {
+          "package_name": "com.example.leek"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119412025064-6d2r1g2ntisbhv10s51nbhc20q8lkenc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjjOWA-qnhL-XiLgo2VF5iv7AxlxsWANI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119412025064-6d2r1g2ntisbhv10s51nbhc20q8lkenc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

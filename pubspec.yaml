@@ -40,6 +40,10 @@ dependencies:
   #picks the image from the camera roll
   image_picker: ^0.6.6+5
 
+  # Adds firebase cloud_firestone to the project
+  firebase_core: ^0.4.0+9
+  cloud_firestore: ^0.12.9+5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
