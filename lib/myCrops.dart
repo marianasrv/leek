@@ -23,7 +23,9 @@ class _CropsState extends State<Crops> {
             color: Color(0xFF3FAF73),
             size: 40,
           ),
-          onPressed: () {},
+          onPressed: () {
+            _addCrop();
+          },
         ),
         body: Column(
           children: [
@@ -49,7 +51,7 @@ class _CropsState extends State<Crops> {
               children: <Widget>[
                 Expanded(
                   child: Divider(color: Color(0xFF1A633C)),
-                  flex: 2,
+                  flex: 4,
                 ),
                 Expanded(
                   child: Text(listHeader[index],
@@ -58,11 +60,11 @@ class _CropsState extends State<Crops> {
                           fontWeight: FontWeight.w400,
                           color: Color(0xFF1A633C),
                           fontSize: 13)),
-                  flex: 1,
+                  flex: 3,
                 ),
                 Expanded(
                   child: Divider(color: Color(0xFF1A633C)),
-                  flex: 2,
+                  flex: 4,
                 ),
               ],
             ),
@@ -186,5 +188,119 @@ class _CropsState extends State<Crops> {
         ],
       )
     ]);
+  }
+
+  void _addCrop() {
+    showDialog(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          var width = MediaQuery.of(context).size.width;
+          return new StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              content: new Container(
+                  height: 290.0,
+                  width: width - 10,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 6,
+                                child: Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 40, 10),
+                                    child: Text(
+                                      "Add crop",
+                                      style: TextStyle(
+                                          color: Color(0xFF1A633C),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    )),
+                              ),
+                              FlatButton(
+                                padding: EdgeInsets.fromLTRB(80, 0, 0, 10),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: 30,
+                                  color: Color(0xFF1A633C),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ]),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                            child: TextField(
+                              onChanged: (value) {
+                                //filterSearchResults(value);
+                              },
+                              controller: editingController,
+                              decoration: InputDecoration(
+                                  isDense: true,
+                                  hintText: "Search...",
+                                  prefixIcon: Icon(Icons.search),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(25.0)))),
+                            ),
+                          ),
+                        ),
+                        //Expanded(
+                        // flex: 3,
+                        _resultCrop(),
+                        //),
+                      ])),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            );
+          });
+        });
+  }
+
+  Widget _resultCrop() {
+    return Card(
+        elevation: 5,
+        margin: const EdgeInsets.fromLTRB(4, 10, 4, 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: ListTile(
+          dense: true,
+          contentPadding: const EdgeInsets.all(4),
+          leading: Image.asset(
+            'images/050-sun.png',
+            width: 40,
+            fit: BoxFit.fitWidth,
+          ),
+          title: Text('Parsley',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1A633C),
+                fontSize: 16,
+              )),
+          subtitle: Text(
+            '3 months',
+            style: TextStyle(
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF1A633C),
+                fontSize: 12),
+          ),
+          trailing: FlatButton(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                color: Color(0xFF1A633C),
+                padding: EdgeInsets.all(6),
+                child: Text(
+                  'Add to my crops',
+                  style: TextStyle(color: Colors.white, fontSize: 11),
+                ),
+              ),
+            ),
+            onPressed: () {},
+          ),
+        ));
   }
 }

@@ -43,102 +43,92 @@ class _RandomWordsState extends State<RandomWords> {
     );
   }
 
-  void _addTip(){
+  void _addTip() {
     showDialog(
-        context: context, barrierDismissible: false, // user must tap button!
+        context: context,
+        barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           var width = MediaQuery.of(context).size.width;
-          return new StatefulBuilder(builder: (context, setState)
-          {
+          return new StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               content: new Container(
                   height: 290.0,
                   width: width - 10,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:[
-                      Row (
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children:[
-                        Expanded(
-                          flex: 6,
-                          child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 40, 10),
-                              child: Text(
-                                "Add tip/trick",
-                                style: TextStyle(
-                                    color: Color(0xFF1A633C),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                              )),
-                        ),
-
-                        FlatButton(
-                          padding: EdgeInsets.fromLTRB(80, 0, 0, 10),
-                          child: Icon(
-                            Icons.close_rounded,
-                            size: 30,
-                            color: Color(0xFF1A633C),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        )
-                      ]
-                    ),
-                    Container(
-                    height:180,
-                    child: TextFormField(
-                        expands:true,
-                        maxLines: null,
-                        textAlignVertical: TextAlignVertical.top,
-                        decoration: new InputDecoration(
-                            hintText: "Lettuce know your tips...",
-                            fillColor: Colors.white,
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(20.0),
-                              borderSide: new BorderSide(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 6,
+                                child: Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 40, 10),
+                                    child: Text(
+                                      "Add tip/trick",
+                                      style: TextStyle(
+                                          color: Color(0xFF1A633C),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    )),
                               ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                color: Color(0xFF3FAF73),
-                                width: 2.0,
-                            ),
-                        )
-                    )
-                    )),
-                      Align(
-                          alignment: Alignment.bottomRight,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: new RaisedButton(
-                                child: new Text('Post',
-                                    style: TextStyle(
-                                        color:  Colors.white,
-                                        fontSize: 12)),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    side: BorderSide(
-                                        color:  Color(0xFF3FAF73))),
-                                color:  Color(0xFF3FAF73),
+                              FlatButton(
+                                padding: EdgeInsets.fromLTRB(80, 0, 0, 10),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: 30,
+                                  color: Color(0xFF1A633C),
+                                ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
-
-                                }),
-                          ))
-
-                    ]
-                  )
-              ),
+                                },
+                              )
+                            ]),
+                        Container(
+                            height: 180,
+                            child: TextFormField(
+                                expands: true,
+                                maxLines: null,
+                                textAlignVertical: TextAlignVertical.top,
+                                decoration: new InputDecoration(
+                                    hintText: "Lettuce know your tips...",
+                                    fillColor: Colors.white,
+                                    border: new OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(20.0),
+                                      borderSide: new BorderSide(),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF3FAF73),
+                                        width: 2.0,
+                                      ),
+                                    )))),
+                        Align(
+                            alignment: Alignment.bottomRight,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: new RaisedButton(
+                                  child: new Text('Post',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side:
+                                          BorderSide(color: Color(0xFF3FAF73))),
+                                  color: Color(0xFF3FAF73),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }),
+                            ))
+                      ])),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
             );
-          }
-          );}
-    );}
-
+          });
+        });
+  }
 
   Widget _buildRow(WordPair pair) {
     final alreadySaved = _saved.contains(pair);
