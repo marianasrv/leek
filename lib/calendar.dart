@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'data/Month.dart';
 
 class Calendar extends StatefulWidget {
   @override
@@ -23,7 +26,8 @@ class _CalendarState extends State<Calendar> {
     'NOV',
     'DEC'
   ];
-  var _currentMonth = 'NOV';
+  var _currentMonth = 'DEC';
+  String monthFormat = DateFormat('MMMM').format(DateTime.now());
   final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
   var selectedRange = RangeValues(3, 6);
@@ -34,6 +38,7 @@ class _CalendarState extends State<Calendar> {
   bool _isMedium = false;
   bool _isHard = false;
   bool _isMonthsOpen = false;
+  String name;
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +84,9 @@ class _CalendarState extends State<Calendar> {
             ]),
             _isMonthsOpen
                 ? Container(
-                    margin: EdgeInsets.fromLTRB(325, 240, 10, 70),
-                    width: 100,
-                    height: 400,
+                    margin: EdgeInsets.fromLTRB(320, 320, 10, 70),
+                    width: 110,
+                    height: 410,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Card(
@@ -135,7 +140,7 @@ class _CalendarState extends State<Calendar> {
                             padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
                             child: Column(children: [
                               Image.asset(
-                                'images/050-sun.png',
+                                'images/crops/acorn.png',
                                 width: 40,
                                 fit: BoxFit.fitWidth,
                               ),
@@ -161,7 +166,7 @@ class _CalendarState extends State<Calendar> {
                           style: TextStyle(
                               color: Color(0xFF1A633C),
                               fontWeight: FontWeight.bold,
-                              fontSize: 17),
+                              fontSize: 18),
                         ),
                       ],
                     ),
@@ -170,7 +175,7 @@ class _CalendarState extends State<Calendar> {
                     padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
                     child: Row(
                       children: [
-                        Text("26/11/2020",
+                        Text("Estimated time:\n" + "",
                             style: TextStyle(
                                 color: Color(0xFF1A633C), fontSize: 13))
                       ],
@@ -215,7 +220,7 @@ class _CalendarState extends State<Calendar> {
                         return _buildMonth(_months[index], context);
                       }),
                 ),
-                margin: EdgeInsets.fromLTRB(width - 80, height - 660, 10, 80),
+                margin: EdgeInsets.fromLTRB(width - 80, height - 600, 10, 80),
                 height: 400,
                 width: 80,
                 decoration: BoxDecoration(
@@ -234,7 +239,6 @@ class _CalendarState extends State<Calendar> {
       visualDensity: VisualDensity(horizontal: 0, vertical: -4),
       title: Text(month,
           textAlign: TextAlign.center,
-          textDirection: TextDirection.ltr,
           style: TextStyle(
             color: Color(0xFF3FAF73),
             fontSize: 16,
@@ -268,7 +272,7 @@ class _CalendarState extends State<Calendar> {
                                   padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                                   child: Column(children: [
                                     Image.asset(
-                                      'images/050-sun.png',
+                                      'images/weather/050-sun.png',
                                       width: 50,
                                       fit: BoxFit.fitWidth,
                                     ),
@@ -742,7 +746,7 @@ class _CalendarState extends State<Calendar> {
         child: Row(children: [
           Text("Most popular in ",
               style: TextStyle(color: Color(0xFF1A633C), fontSize: 14)),
-          Text("November",
+          Text(monthFormat,
               style: TextStyle(
                   color: Color(0xFF1A633C),
                   fontSize: 14,
@@ -753,28 +757,32 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget _titleAndProfile() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-            padding: EdgeInsets.only(left: 30, top: 20, bottom: 10, right: 20),
-            child: Text(
-              "Crops Calendar",
-              style: TextStyle(
-                  color: Color(0xFF1A633C),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25),
-            )),
-        Padding(
-            padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
-            child: Column(children: [
-              Image.asset(
-                'images/050-sun.png',
-                width: 40,
-                fit: BoxFit.fitWidth,
+    return Container(
+        margin: EdgeInsets.only(top: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding:
+                  EdgeInsets.only(left: 30, top: 20, bottom: 10, right: 20),
+              child: Text(
+                'Crops Calendar',
+                style: TextStyle(
+                    color: Color(0xFF1A633C),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25),
               ),
-            ])),
-      ],
-    );
+            ),
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+                child: Column(children: [
+                  Image.asset(
+                    'images/users/carolina.png',
+                    width: 70,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ])),
+          ],
+        ));
   }
 }

@@ -141,23 +141,40 @@ class _RandomWordsState extends State<RandomWords> {
         ),
         elevation: 5.0,
         child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.amber,
-              child: Text('MS'),
-            ),
-            title: Text(
-              "This is the tip title.",
-              style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600),
-            ),
-            // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
+          contentPadding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+          leading: CircleAvatar(
+            backgroundColor: Colors.amber,
+            child: Text('MS'),
+          ),
+          title: Text(
+            "This is the tip title. ksdbcaurb cksag fiubcask ud bfciauebc kdsjbvci uaechsv jcdk",
+            style: TextStyle(
+                color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w400),
+          ),
+          // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
 
-            subtitle: Text("26/11/2020",
-                style: TextStyle(color: Colors.grey, fontSize: 13)),
-            trailing: Icon(Icons.keyboard_arrow_right,
-                color: Colors.grey, size: 30.0)),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_upward,
+                  color: Color(0xFF3FAF73),
+                  size: 30,
+                ),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_downward,
+                  color: Colors.grey,
+                  size: 30,
+                ),
+                onPressed: () {},
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -243,29 +260,32 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _titleAndProfile() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-            padding: EdgeInsets.only(left: 30, top: 20, bottom: 10, right: 20),
-            child: Text(
-              "Tips & Tricks",
-              style: TextStyle(
-                  color: Color(0xFF1A633C),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25),
-            )),
-        Padding(
-            padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
-            child: Column(children: [
-              Image.asset(
-                'images/050-sun.png',
-                width: 40,
-                fit: BoxFit.fitWidth,
-              ),
-            ])),
-      ],
-    );
+    return Container(
+        margin: EdgeInsets.only(top: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+                padding:
+                    EdgeInsets.only(left: 30, top: 20, bottom: 10, right: 20),
+                child: Text(
+                  "Tips & Tricks",
+                  style: TextStyle(
+                      color: Color(0xFF1A633C),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25),
+                )),
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+                child: Column(children: [
+                  Image.asset(
+                    'images/users/carolina.png',
+                    width: 70,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ])),
+          ],
+        ));
   }
 
   void _showcontent() {

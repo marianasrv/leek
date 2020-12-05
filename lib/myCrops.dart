@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:intl/intl.dart';
 
 class Crops extends StatefulWidget {
   @override
@@ -12,6 +13,8 @@ class _CropsState extends State<Crops> {
   List<String> listHeader = ['Fruits', 'Vegetables', 'Herbs'];
 
   final _biggerFont = TextStyle(fontSize: 18.0);
+
+  String dateFormat = DateFormat('EEEE').format(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,6 @@ class _CropsState extends State<Crops> {
           children: [
             _titleAndProfile(),
             Expanded(
-              flex: 6,
               child: gridHeader(),
             ),
           ],
@@ -45,7 +47,7 @@ class _CropsState extends State<Crops> {
         return new StickyHeader(
           header: Container(
             color: Color(0xFFFAFAFA),
-            padding: EdgeInsets.fromLTRB(20, 5, 10, 20),
+            padding: EdgeInsets.fromLTRB(20, 0, 10, 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -79,7 +81,7 @@ class _CropsState extends State<Crops> {
                 crossAxisCount: 3,
                 //childAspectRatio: 1,
                 crossAxisSpacing: 30,
-                mainAxisSpacing: 20,
+                mainAxisSpacing: 10,
               ),
               itemBuilder: (contxt, indx) {
                 return CircularPercentIndicator(
@@ -96,7 +98,7 @@ class _CropsState extends State<Crops> {
                       child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Image.asset(
-                            'images/050-sun.png',
+                            'images/weather/050-sun.png',
                             // width: 10,
                           )),
                     ));
@@ -110,84 +112,84 @@ class _CropsState extends State<Crops> {
   }
 
   Widget _titleAndProfile() {
-    return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-              padding:
-                  EdgeInsets.only(left: 30, top: 20, bottom: 10, right: 20),
-              child: Image.asset(
-                'images/logo.png',
-                //width: 120,
-                height: 40,
-                fit: BoxFit.fitHeight,
-              )),
-          Padding(
-            padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
-            child: Image.asset(
-              'images/050-sun.png',
-              width: 40,
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  elevation: 6.0,
-                  child: Row(children: [
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(18, 10, 0, 10),
-                        child: Text("Saturday,",
-                            style: TextStyle(
-                                color: Color(0xFF1A633C),
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600))),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
-                      child: Image.asset(
-                        'images/050-sun.png',
-                        width: 20,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                        child: Text("35°",
-                            style: TextStyle(
-                                color: Color(0xFF1A633C),
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600))),
-                  ]),
+    return Container(
+        margin: EdgeInsets.only(top: 30),
+        child: Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                  padding:
+                      EdgeInsets.only(left: 30, top: 20, bottom: 0, right: 20),
+                  child: Image.asset(
+                    'images/brand/logo.png',
+                    //width: 120,
+                    height: 50,
+                    fit: BoxFit.fitHeight,
+                  )),
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+                child: Image.asset(
+                  'images/users/carolina.png',
+                  width: 70,
+                  fit: BoxFit.fitWidth,
                 ),
-              ))
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 6.0,
+                      child: Row(children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(18, 10, 0, 10),
+                            child: Text(dateFormat + ",",
+                                style: TextStyle(
+                                    color: Color(0xFF1A633C),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600))),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                          child: Image.asset(
+                            'images/weather/050-sun.png',
+                            width: 20,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                            child: Text("35°",
+                                style: TextStyle(
+                                    color: Color(0xFF1A633C),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600))),
+                      ]),
+                    ),
+                  ))
+            ],
+          ),
           Padding(
-              padding: EdgeInsets.only(left: 30, top: 5, bottom: 10, right: 20),
-              child: Text(
+            padding: EdgeInsets.only(left: 30, top: 0, bottom: 10, right: 0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Text(
                 "My Crops",
                 style: TextStyle(
                     color: Color(0xFF1A633C),
                     fontWeight: FontWeight.bold,
                     fontSize: 25),
-              ))
-        ],
-      )
-    ]);
+              )
+            ]),
+          )
+        ]));
   }
 
   void _addCrop() {
@@ -270,7 +272,7 @@ class _CropsState extends State<Crops> {
           dense: true,
           contentPadding: const EdgeInsets.all(4),
           leading: Image.asset(
-            'images/050-sun.png',
+            'images/weather/050-sun.png',
             width: 40,
             fit: BoxFit.fitWidth,
           ),

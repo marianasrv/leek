@@ -31,7 +31,52 @@ class _PlagueDetectorState extends State<PlagueDetector> {
           children: [
             _titleAndProfile(),
             _buildCard(),
-            _image == null? Text('not loaded') : Text('loaded')
+            _image == null
+                ? Container()
+                : Column(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        margin: EdgeInsets.only(left: 40, right: 30),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.file(
+                            _image,
+                            width: 200,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ),
+                      //Spacer(),
+                      _image == null
+                          ? Container()
+                          : Container(
+                              margin: EdgeInsets.only(top: 200),
+                              alignment: Alignment.bottomCenter,
+                              child: FlatButton(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    color: Color(0xFF1A633C),
+                                    padding:
+                                        EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                    child: Text(
+                                      'Start detection',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {},
+                              ),
+                            )
+                    ],
+                  )
           ],
         ));
   }
@@ -58,7 +103,6 @@ class _PlagueDetectorState extends State<PlagueDetector> {
                               color: Color(0xFF3FAF73), size: 30),
                           onPressed: () {
                             _imgFromGallery();
-
                           },
                         ),
                       ],
@@ -98,29 +142,32 @@ class _PlagueDetectorState extends State<PlagueDetector> {
   }
 
   Widget _titleAndProfile() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-            padding: EdgeInsets.only(left: 30, top: 20, bottom: 10, right: 20),
-            child: Text(
-              "Plague Detector",
-              style: TextStyle(
-                  color: Color(0xFF1A633C),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25),
-            )),
-        Padding(
-            padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
-            child: Column(children: [
-              Image.asset(
-                'images/050-sun.png',
-                width: 40,
-                fit: BoxFit.fitWidth,
-              ),
-            ])),
-      ],
-    );
+    return Container(
+        margin: EdgeInsets.only(top: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+                padding:
+                    EdgeInsets.only(left: 30, top: 20, bottom: 10, right: 20),
+                child: Text(
+                  "Plague Detector",
+                  style: TextStyle(
+                      color: Color(0xFF1A633C),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25),
+                )),
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+                child: Column(children: [
+                  Image.asset(
+                    'images/users/carolina.png',
+                    width: 70,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ])),
+          ],
+        ));
   }
 
   Future _imgFromCamera() async {

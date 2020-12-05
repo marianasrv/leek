@@ -53,17 +53,18 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Leek"),
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.menu,
-                size: 30,
-              ),
-              onPressed: _pushSaved),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text("Leek"),
+      //   // actions: [
+      //   //   IconButton(
+      //   //       icon: Icon(
+      //   //         Icons.menu,
+      //   //         size: 30,
+      //   //       ),
+      //   //       onPressed: _pushSaved),
+      //   // ],
+      // ),
+
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
