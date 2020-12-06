@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class Crops extends StatefulWidget {
@@ -9,10 +10,35 @@ class Crops extends StatefulWidget {
 }
 
 class _CropsState extends State<Crops> {
+  @override
+  void initState() {
+    super.initState();
+    Firestore.instance.collection('users').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        setState(() => crops = val.documents[0].data['myCrops']);
+      } else {
+        print("Not Found");
+      }
+      for (int i = 0; i < crops.length; i++) {
+        if (crops[i]['type'] == 'fruit') {
+          setState(() => fruits.add(crops[i]));
+        } else if (crops[i]['type'] == 'herb') {
+          setState(() => herbs.add(crops[i]));
+        } else if (crops[i]['type'] == 'vegetable') {
+          setState(() => vegetables.add(crops[i]));
+        }
+      }
+    });
+  }
+
   TextEditingController editingController = TextEditingController();
   List<String> listHeader = ['Fruits', 'Vegetables', 'Herbs'];
 
   final _biggerFont = TextStyle(fontSize: 18.0);
+  var vegetables = [];
+  var fruits = [];
+  var herbs = [];
+  var crops = [];
 
   String dateFormat = DateFormat('EEEE').format(DateTime.now());
 
@@ -47,7 +73,7 @@ class _CropsState extends State<Crops> {
         return new StickyHeader(
           header: Container(
             color: Color(0xFFFAFAFA),
-            padding: EdgeInsets.fromLTRB(20, 0, 10, 20),
+            padding: EdgeInsets.fromLTRB(20, 0, 10, 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -72,11 +98,15 @@ class _CropsState extends State<Crops> {
             ),
           ),
           content: Container(
-            padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 0, 30, 10),
             child: GridView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: 4,
+              itemCount: index == 0
+                  ? fruits.length
+                  : index == 1
+                      ? vegetables.length
+                      : herbs.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 //childAspectRatio: 1,
@@ -98,7 +128,11 @@ class _CropsState extends State<Crops> {
                       child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Image.asset(
-                            'images/weather/050-sun.png',
+                            index == 0
+                                ? fruits[indx]['imgPath']
+                                : index == 1
+                                    ? vegetables[indx]['imgPath']
+                                    : herbs[indx]['imgPath'],
                             // width: 10,
                           )),
                     ));
@@ -109,6 +143,17 @@ class _CropsState extends State<Crops> {
       },
       shrinkWrap: true,
     );
+  }
+
+  void filterList() {
+    setState(() => vegetables.removeRange(0, vegetables.length));
+    Firestore.instance.collection('crops').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        setState(() => vegetables.add(val.documents[0].data));
+      } else {
+        print("Not Found");
+      }
+    });
   }
 
   Widget _titleAndProfile() {

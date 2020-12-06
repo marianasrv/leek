@@ -10,27 +10,46 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
+  @override
+  void initState() {
+    super.initState();
+    Firestore.instance.collection('crops').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        for (int i = 0; i < val.documents.length; i++) {
+          if (_months[_currentMonth].toLowerCase() ==
+              val.documents[i].data['bestMonth']) {
+            setState(() => vegetables.add(val.documents[i].data));
+          }
+        }
+      } else {
+        print("Not Found");
+      }
+    });
+  }
+
   TextEditingController editingController = TextEditingController();
   final _suggestions = <WordPair>[];
-  final _months = [
-    'JAN',
-    'FEV',
-    'MAR',
-    'APR',
-    'MAY',
-    'JUN',
-    'JUL',
-    'AUG',
-    'SEP',
-    'OCT',
-    'NOV',
-    'DEC'
-  ];
-  var _currentMonth = 'DEC';
+  final Map<String, String> _months = {
+    'JAN': 'January',
+    'FEV': 'February',
+    'MAR': 'March',
+    'APR': 'April',
+    'MAY': 'May',
+    'JUN': 'June',
+    'JUL': 'July',
+    'AUG': 'August',
+    'SEP': 'September',
+    'OCT': 'October',
+    'NOV': 'November',
+    'DEC': 'December'
+  };
+  var _currentMonth = DateFormat('MMM').format(DateTime.now()).toUpperCase();
   String monthFormat = DateFormat('MMMM').format(DateTime.now());
+  var vegetables = [];
+
   final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
-  var selectedRange = RangeValues(3, 6);
+  var selectedRange = RangeValues(0, 24);
   bool _typeHerbs = false;
   bool _typeVegetable = false;
   bool _typeFruit = false;
@@ -104,7 +123,9 @@ class _CalendarState extends State<Calendar> {
                                   itemCount: 12,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return _buildMonth(_months[index], context);
+                                    return _buildMonth(
+                                        _months.entries.toList()[index].key,
+                                        context);
                                   }),
                             )
                           ],
@@ -121,7 +142,7 @@ class _CalendarState extends State<Calendar> {
   Widget _buildCard(int index) {
     return GestureDetector(
         onTap: () {
-          _showVegetablePage();
+          _showVegetablePage(vegetables[index]);
         },
         child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
@@ -140,7 +161,9 @@ class _CalendarState extends State<Calendar> {
                             padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
                             child: Column(children: [
                               Image.asset(
-                                'images/crops/acorn.png',
+                                //'images/crops/chili.png',
+                                vegetables[index]['imgPath'],
+                                //snapshot.data.documents[index]['imgPath'],
                                 width: 40,
                                 fit: BoxFit.fitWidth,
                               ),
@@ -162,7 +185,7 @@ class _CalendarState extends State<Calendar> {
                     child: Row(
                       children: [
                         Text(
-                          "CropName",
+                          vegetables[index]['name'],
                           style: TextStyle(
                               color: Color(0xFF1A633C),
                               fontWeight: FontWeight.bold,
@@ -175,9 +198,13 @@ class _CalendarState extends State<Calendar> {
                     padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
                     child: Row(
                       children: [
-                        Text("Estimated time:\n" + "",
+                        Text(
+                            "Estimated time:\n" +
+                                convertGrowthTime(
+                                        vegetables[index]['timeToGrow'])
+                                    .toString(),
                             style: TextStyle(
-                                color: Color(0xFF1A633C), fontSize: 13))
+                                color: Color(0xFF1A633C), fontSize: 13)),
                       ],
                     ),
                   )
@@ -192,9 +219,55 @@ class _CalendarState extends State<Calendar> {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         crossAxisCount: 2,
-        children: List.generate(10, (index) {
+        children: List.generate(vegetables.length, (index) {
           return _buildCard(index);
         }));
+  }
+
+  void filterList() {
+    setState(() => vegetables.removeRange(0, vegetables.length));
+    Firestore.instance.collection('crops').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        for (int i = 0; i < val.documents.length; i++) {
+          if (_months[_currentMonth].toLowerCase() ==
+              val.documents[i].data['bestMonth']) {
+            if (_typeVegetable &&
+                    val.documents[i].data['type'] == 'vegetable' ||
+                _typeFruit && val.documents[i].data['type'] == 'fruit' ||
+                _typeHerbs && val.documents[i].data['type'] == 'herb' ||
+                (!_typeHerbs && !_typeVegetable && !_typeFruit)) {
+              if (_isEasy && val.documents[i].data['difficulty'] == 'easy' ||
+                  _isMedium &&
+                      val.documents[i].data['difficulty'] == 'medium' ||
+                  _isHard && val.documents[i].data['difficulty'] == 'hard' ||
+                  (!_isHard && !_isMedium && !_isEasy)) {
+                if (val.documents[i].data['timeToGrow'] / 30 >
+                        selectedRange.start &&
+                    val.documents[i].data['timeToGrow'] / 30 <
+                        selectedRange.end) {
+                  setState(() => vegetables.add(val.documents[i].data));
+                }
+              }
+            }
+          }
+        }
+      } else {
+        print("Not Found");
+      }
+    });
+  }
+
+  String convertGrowthTime(int days) {
+    if (days < 30) {
+      return days.toString() + " days";
+    } else if (days < 365) {
+      var month = days ~/ 30;
+      return month == 1
+          ? month.toString() + " month"
+          : (days ~/ 30).toString() + " months";
+    } else {
+      return "over 1 year";
+    }
   }
 
   void _monthsWindow() {
@@ -247,11 +320,13 @@ class _CalendarState extends State<Calendar> {
           )),
       onTap: () {
         setState(() => _currentMonth = month);
+        filterList();
+        changeMonth();
       },
     );
   }
 
-  void _showVegetablePage() {
+  void _showVegetablePage(Map<String, dynamic> veg) {
     showDialog(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -272,7 +347,7 @@ class _CalendarState extends State<Calendar> {
                                   padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                                   child: Column(children: [
                                     Image.asset(
-                                      'images/weather/050-sun.png',
+                                      veg['imgPath'],
                                       width: 50,
                                       fit: BoxFit.fitWidth,
                                     ),
@@ -297,7 +372,7 @@ class _CalendarState extends State<Calendar> {
                                 child: Padding(
                                     padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
                                     child: Text(
-                                      "Crop Name",
+                                      veg['name'],
                                       style: TextStyle(
                                           color: Color(0xFF1A633C),
                                           fontWeight: FontWeight.bold,
@@ -311,24 +386,11 @@ class _CalendarState extends State<Calendar> {
                               Expanded(
                                 flex: 6,
                                 child: Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 2, 40, 0),
+                                    padding: EdgeInsets.fromLTRB(0, 2, 40, 5),
                                     child: Text(
-                                      "Estimated time:",
-                                      style: TextStyle(
-                                          color: Color(0xFF1A633C),
-                                          fontSize: 12),
-                                    )),
-                              ),
-                            ]),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 6,
-                                child: Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 2, 0, 10),
-                                    child: Text(
-                                      "time",
+                                      "Estimated time:\n" +
+                                          convertGrowthTime(veg['timeToGrow'])
+                                              .toString(),
                                       style: TextStyle(
                                           color: Color(0xFF1A633C),
                                           fontSize: 12),
@@ -348,7 +410,7 @@ class _CalendarState extends State<Calendar> {
                                 child: Padding(
                                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Text(
-                                      "Description",
+                                      veg['description'],
                                       style: TextStyle(
                                           color: Color(0xFF1A633C),
                                           fontSize: 12),
@@ -673,6 +735,7 @@ class _CalendarState extends State<Calendar> {
                     disabledColor: Color(0x803FAF73),
                     onPressed: () {
                       Navigator.of(context).pop();
+                      filterList();
                     },
                   )),
             ],
@@ -754,6 +817,10 @@ class _CalendarState extends State<Calendar> {
         ]),
       )
     ]);
+  }
+
+  void changeMonth() {
+    monthFormat = _months[_currentMonth];
   }
 
   Widget _titleAndProfile() {
