@@ -27,7 +27,9 @@ Welcome to Leek! A platform for vegetable growth, providing tips and tricks, wea
 
 
 <a name="getting_started"> 
-## 🚀 Getting Started
+	
+##  🚀 Getting Started
+
 </a>
 1. Follow the steps (1) and (2) of [Getting Started with Flutter](https://flutter.dev/docs/get-started/) to install flutter and setup an editor.
 2. Download the project [here!](https://github.com/gonmelo/leek/archive/master.zip) and unzip at a desired directory.
@@ -40,7 +42,9 @@ flutter run
 **Note:** The project is still in development and there are no releases so the app will be run in **debug mode**.
 
 <a name="flutter"> 
+	
 ## 👩‍💻 Flutter
+
 </a>
 This project is powered by Flutter.
 
@@ -55,7 +59,9 @@ For help getting started with Flutter,check
 samples, guidance on mobile development, and a full API reference.
 
 <a name="contribute"> 
-## 🤝 Contribute 
+	
+## 🤝 Contribute
+
 </a>
 As this is our first experience with [Flutter](https://flutter.dev/), we know this might not be the perfect. If you have any ideas, just open an [issue](https://github.com/gonmelo/leek/issues) and tell us what you think!
 
@@ -63,7 +69,9 @@ If you'd like to contribute, please fork the repository and make changes as you'
 
 
 <a name="contributors"> 
+	
 ## Contributors
+
 </a>
 
 <a href="https://github.com/gonmelo">
@@ -83,12 +91,16 @@ If you'd like to contribute, please fork the repository and make changes as you'
 </a>
 
 <a name="support"> 
+	
 ## Show your support 
+
 </a>
 :star: Star us on GitHub — it helps!
 
 <a name="license"> 
-## License
+	
+## 📝 License
+
 </a>
 
 
