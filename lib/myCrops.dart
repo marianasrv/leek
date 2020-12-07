@@ -10,8 +10,7 @@ class Crops extends StatefulWidget {
 }
 
 class _CropsState extends State<Crops> {
-
-  void generalInit(){
+  void generalInit() {
     Firestore.instance.collection('users').getDocuments().then((val) {
       if (val.documents.length > 0) {
         setState(() {
@@ -50,7 +49,6 @@ class _CropsState extends State<Crops> {
   var crops = [];
   Map<String, dynamic> user;
   int docId;
-
 
   String dateFormat = DateFormat('EEEE').format(DateTime.now());
 
@@ -127,40 +125,40 @@ class _CropsState extends State<Crops> {
               ),
               itemBuilder: (contxt, indx) {
                 return GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Map<dynamic, dynamic> veg = index == 0
                           ? fruits[indx]
                           : index == 1
-                          ? vegetables[indx]
-                          : herbs[indx];
+                              ? vegetables[indx]
+                              : herbs[indx];
                       _openMyCrop(veg);
                     },
                     child: CircularPercentIndicator(
-                    radius: 90,
-                    percent: getPercentage(index == 0
-                        ? fruits[indx]
-                        : index == 1
-                        ? vegetables[indx]
-                        : herbs[indx]),
-                    backgroundColor: Colors.transparent,
-                    progressColor: Color(0xFF3FAF73),
-                    center: Container(
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Color(0xFF1A633C)),
-                      ),
-                      child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Image.asset(
-                            index == 0
-                                ? fruits[indx]['imgPath']
-                                : index == 1
-                                    ? vegetables[indx]['imgPath']
-                                    : herbs[indx]['imgPath'],
-                            // width: 10,
-                          )),
-                    )));
+                        radius: 90,
+                        percent: getPercentage(index == 0
+                            ? fruits[indx]
+                            : index == 1
+                                ? vegetables[indx]
+                                : herbs[indx]),
+                        backgroundColor: Colors.transparent,
+                        progressColor: Color(0xFF3FAF73),
+                        center: Container(
+                          margin: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Color(0xFF1A633C)),
+                          ),
+                          child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Image.asset(
+                                index == 0
+                                    ? fruits[indx]['imgPath']
+                                    : index == 1
+                                        ? vegetables[indx]['imgPath']
+                                        : herbs[indx]['imgPath'],
+                                // width: 10,
+                              )),
+                        )));
               },
             ),
           ),
@@ -170,13 +168,17 @@ class _CropsState extends State<Crops> {
     );
   }
 
-  double getPercentage(Map<dynamic,dynamic> crop){
+  double getPercentage(Map<dynamic, dynamic> crop) {
     DateTime planted = crop['plant'].toDate();
     DateTime now = DateTime.now();
-    int dif =  now.difference(planted).inDays;
+    int dif = now.difference(planted).inDays;
 
-    if (dif == 0) {return 0.01;}
-    if (dif / crop['timeToGrow'] > 1) {return 1.0;}
+    if (dif == 0) {
+      return 0.01;
+    }
+    if (dif / crop['timeToGrow'] > 1) {
+      return 1.0;
+    }
     return dif / crop['timeToGrow'];
   }
 
@@ -191,7 +193,7 @@ class _CropsState extends State<Crops> {
     });
   }
 
-  void _openMyCrop(Map<dynamic, dynamic> veg){
+  void _openMyCrop(Map<dynamic, dynamic> veg) {
     showDialog(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -200,7 +202,7 @@ class _CropsState extends State<Crops> {
           return new StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               content: new Container(
-                  height: 150.0,
+                  height: 210.0,
                   width: width - 10,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,48 +212,12 @@ class _CropsState extends State<Crops> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Column(children: [
-                                    CircularPercentIndicator(
-                                        radius: 90,
-                                        percent: getPercentage(veg),
-                                        footer: getFooter(getPercentage(veg)),
-                                        backgroundColor: Colors.transparent,
-                                        progressColor: Color(0xFF3FAF73),
-                                        center: Container(
-                                          margin: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(color: Color(0xFF1A633C)),
-                                          ),
-                                          child: Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: Image.asset(
-                                                veg['imgPath'],
-                                                // width: 10,
-                                              )),
-                                        )),
-                                  ])),
-                              Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(veg['crop'],
-                                      style: TextStyle(
-                                          color: Color(0xFF1A633C),
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w600)),
-                                  Text('Planted on: ' + DateFormat('dd/MM/yyyy').format( veg['plant'].toDate()),
-                                      style: TextStyle(
-                                          color: Color(0xFF1A633C),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600)),
-                                  Text('Estimated Harvest:\n  ' + DateFormat('dd MMMM yyyy').format( veg['plant'].toDate().add(new Duration(days: veg['timeToGrow']))),
-                                      style: TextStyle(
-                                          color: Color(0xFF1A633C),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600))
-
-                                ],
+                                padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
+                                child: Text(veg['crop'],
+                                    style: TextStyle(
+                                        color: Color(0xFF1A633C),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700)),
                               ),
                               FlatButton(
                                 padding: EdgeInsets.fromLTRB(80, 0, 0, 0),
@@ -263,26 +229,79 @@ class _CropsState extends State<Crops> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                              )
+                              ),
                             ]),
-                        new Align(
-                          alignment: Alignment.bottomRight,
-                            child: RaisedButton(
-                            child: new Text('Remove',
-                                style: TextStyle(
-                                    color: Color(0xFFA11F12), fontSize: 12)),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side:
-                                BorderSide(color: Color(0xFFA11F12))),
-                            color: Colors.white,
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              _deleteCrop(veg);
-                              setState(() {
-                                crops = user['myCrops'];
-                              });
-                            })),
+                        Row(children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: Column(children: [
+                              CircularPercentIndicator(
+                                  radius: 90,
+                                  percent: getPercentage(veg),
+                                  footer: getFooter(getPercentage(veg)),
+                                  backgroundColor: Colors.transparent,
+                                  progressColor: Color(0xFF3FAF73),
+                                  center: Container(
+                                    margin: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border:
+                                          Border.all(color: Color(0xFF1A633C)),
+                                    ),
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Image.asset(
+                                          veg['imgPath'],
+                                          // width: 10,
+                                        )),
+                                  )),
+                            ]),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  'Planted on: ' +
+                                      DateFormat('dd/MM/yyyy')
+                                          .format(veg['plant'].toDate()),
+                                  style: TextStyle(
+                                      color: Color(0xFF1A633C),
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600)),
+                              Text(
+                                  'Estimated Harvest:\n' +
+                                      DateFormat('dd MMMM yyyy').format(
+                                          veg['plant'].toDate().add(
+                                              new Duration(
+                                                  days: veg['timeToGrow']))),
+                                  style: TextStyle(
+                                      color: Color(0xFF1A633C),
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600))
+                            ],
+                          ),
+                        ]),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              RaisedButton(
+                                  child: new Text('Remove',
+                                      style: TextStyle(
+                                          color: Color(0xFFA11F12),
+                                          fontSize: 12)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side:
+                                          BorderSide(color: Color(0xFFA11F12))),
+                                  color: Colors.white,
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    _deleteCrop(veg);
+                                    setState(() {
+                                      crops = user['myCrops'];
+                                    });
+                                  })
+                            ]),
                       ])),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -291,23 +310,23 @@ class _CropsState extends State<Crops> {
         });
   }
 
-  Text getFooter(double val){
-    val = val*100;
-    return Text(val.round().toString() + "%", style: TextStyle(
-        color: Color(0xFF1A633C), fontSize: 12));
+  Text getFooter(double val) {
+    val = val * 100;
+    return Text(val.round().toString() + "%",
+        style: TextStyle(color: Color(0xFF1A633C), fontSize: 12));
   }
 
-  void _deleteCrop(Map<dynamic,dynamic> veg) async{
+  void _deleteCrop(Map<dynamic, dynamic> veg) async {
     var tmp = [];
-    for(int i = 0; i < user['myCrops'].length ; i++){
-      if (user['myCrops'][i]['crop'] != veg['crop']){
+    for (int i = 0; i < user['myCrops'].length; i++) {
+      if (user['myCrops'][i]['crop'] != veg['crop']) {
         tmp = tmp + [user['myCrops'][i]];
       }
     }
     user['myCrops'] = tmp;
 
-
-    QuerySnapshot querySnapshot = await Firestore.instance.collection('users').getDocuments();
+    QuerySnapshot querySnapshot =
+        await Firestore.instance.collection('users').getDocuments();
     querySnapshot.documents[docId].reference.updateData(user);
 
     setState(() => crops.removeRange(0, crops.length));
@@ -373,7 +392,7 @@ class _CropsState extends State<Crops> {
                         ),
                         Padding(
                             padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                            child: Text("35°",
+                            child: Text("10°",
                                 style: TextStyle(
                                     color: Color(0xFF1A633C),
                                     fontSize: 15,
@@ -391,7 +410,7 @@ class _CropsState extends State<Crops> {
                 style: TextStyle(
                     color: Color(0xFF1A633C),
                     fontWeight: FontWeight.bold,
-                    fontSize: 25),
+                    fontSize: 28),
               )
             ]),
           )

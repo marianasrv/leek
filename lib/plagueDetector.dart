@@ -205,7 +205,7 @@ class _PlagueDetectorState extends State<PlagueDetector> {
                   style: TextStyle(
                       color: Color(0xFF1A633C),
                       fontWeight: FontWeight.bold,
-                      fontSize: 25),
+                      fontSize: 28),
                 )),
             Padding(
                 padding: EdgeInsets.fromLTRB(10, 20, 20, 10),

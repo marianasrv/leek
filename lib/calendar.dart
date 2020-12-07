@@ -180,7 +180,7 @@ class _CalendarState extends State<Calendar> {
                                 //'images/crops/chili.png',
                                 vegetables[index]['imgPath'],
                                 //snapshot.data.documents[index]['imgPath'],
-                                width: 40,
+                                width: 50,
                                 fit: BoxFit.fitWidth,
                               ),
                             ])),
@@ -197,7 +197,7 @@ class _CalendarState extends State<Calendar> {
                             )),
                       ]),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
                     child: Row(
                       children: [
                         Text(
@@ -205,7 +205,7 @@ class _CalendarState extends State<Calendar> {
                           style: TextStyle(
                               color: Color(0xFF1A633C),
                               fontWeight: FontWeight.bold,
-                              fontSize: 18),
+                              fontSize: 20),
                         ),
                       ],
                     ),
@@ -443,11 +443,12 @@ class _CalendarState extends State<Calendar> {
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 12)),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                      ),
-                                  color: Color(0xFF1A633C).withOpacity(getOpacity(veg['name'])),
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                  color: Color(0xFF1A633C)
+                                      .withOpacity(getOpacity(veg['name'])),
                                   onPressed: () {
-                                    if (getOpacity(veg['name']) == 1){
+                                    if (getOpacity(veg['name']) == 1) {
                                       _addToMyCrops(veg);
                                       Navigator.of(context).pop();
                                     }
@@ -461,29 +462,28 @@ class _CalendarState extends State<Calendar> {
         });
   }
 
-  void _addToMyCrops(Map<String,dynamic> veg) async{
-    Map<String,dynamic> tmp = {};
+  void _addToMyCrops(Map<String, dynamic> veg) async {
+    Map<String, dynamic> tmp = {};
     tmp['crop'] = veg['name'];
     tmp['imgPath'] = veg['imgPath'];
     tmp['timeToGrow'] = veg['timeToGrow'];
     tmp['type'] = veg['type'];
     tmp['plant'] = DateTime.now();
 
-    user['myCrops'] =  user['myCrops'] + [tmp];
+    user['myCrops'] = user['myCrops'] + [tmp];
 
-
-    QuerySnapshot querySnapshot = await Firestore.instance.collection('users').getDocuments();
+    QuerySnapshot querySnapshot =
+        await Firestore.instance.collection('users').getDocuments();
     querySnapshot.documents[docId].reference.updateData(user);
   }
 
-  double getOpacity(String crop){
-
-    for (int i = 0; i < user['myCrops'].length ; i++){
-      if (user['myCrops'][i]['crop'] == crop)
-        return 0.3;
+  double getOpacity(String crop) {
+    for (int i = 0; i < user['myCrops'].length; i++) {
+      if (user['myCrops'][i]['crop'] == crop) return 0.3;
     }
     return 1;
   }
+
   void _showcontent() {
     showDialog(
       context: context, barrierDismissible: false, // user must tap button!
@@ -878,7 +878,7 @@ class _CalendarState extends State<Calendar> {
                 style: TextStyle(
                     color: Color(0xFF1A633C),
                     fontWeight: FontWeight.bold,
-                    fontSize: 25),
+                    fontSize: 28),
               ),
             ),
             Padding(

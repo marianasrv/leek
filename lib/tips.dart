@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class RandomWords extends StatefulWidget {
   @override
   _RandomWordsState createState() => _RandomWordsState();
 }
 
 class _RandomWordsState extends State<RandomWords> {
-
-  void generalInit(){
+  void generalInit() {
     Firestore.instance.collection('tips').getDocuments().then((val) {
       if (val.documents.length > 0) {
         for (int i = 0; i < val.documents.length; i++) {
@@ -26,7 +24,7 @@ class _RandomWordsState extends State<RandomWords> {
         for (int i = 0; i < val.documents.length; i++) {
           if (val.documents[i].data['name'] == 'Carolina')
             setState(() {
-              user =(val.documents[i].data);
+              user = (val.documents[i].data);
             });
         }
       } else {
@@ -34,9 +32,9 @@ class _RandomWordsState extends State<RandomWords> {
       }
     });
   }
+
   @override
   void initState() {
-
     super.initState();
     generalInit();
   }
@@ -162,7 +160,7 @@ class _RandomWordsState extends State<RandomWords> {
                                   color: Color(0xFF3FAF73),
                                   onPressed: () {
                                     Map<String, dynamic> tmp = {};
-                                    if (addedTip != ""){
+                                    if (addedTip != "") {
                                       addTip();
                                       setState(() {
                                         addedTip = '';
@@ -179,7 +177,7 @@ class _RandomWordsState extends State<RandomWords> {
         });
   }
 
-  void addTip(){
+  void addTip() {
     Map<String, dynamic> tmp = {};
     tmp['user'] = user['name'];
     tmp['imgPath'] = user['imgPath'];
@@ -212,17 +210,18 @@ class _RandomWordsState extends State<RandomWords> {
           title: Text(
             tip['content'],
             style: TextStyle(
-                color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w400),
+                color: Colors.black.withOpacity(0.6),
+                fontSize: 13,
+                fontWeight: FontWeight.w400),
           ),
           // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
 
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-                  IconButton(
+              Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                IconButton(
+                  visualDensity: VisualDensity(vertical: -4),
                   icon: Icon(
                     Icons.arrow_upward,
                     color: Colors.grey,
@@ -234,28 +233,27 @@ class _RandomWordsState extends State<RandomWords> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color(0xFF1A633C),
-                      fontSize: 7,
+                      fontSize: 13,
                     )),
-                ]
-              ),
-              Column(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_downward,
-                      color: Colors.grey,
-                      size: 30,
-                    ),
-                    onPressed: () {},
+              ]),
+              Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                IconButton(
+                  visualDensity: VisualDensity(vertical: -4),
+                  icon: Icon(
+                    Icons.arrow_downward,
+                    color: Colors.grey,
+                    size: 30,
                   ),
-                  Text(tip['dislikes'].toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFFA11F12),
-                        fontSize: 7,
-                      )),
-                ]
-              )],
+                  onPressed: () {},
+                ),
+                Text(tip['dislikes'].toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFFA11F12),
+                      fontSize: 13,
+                    )),
+              ])
+            ],
           ),
         ),
       ),
@@ -267,7 +265,6 @@ class _RandomWordsState extends State<RandomWords> {
         padding: EdgeInsets.fromLTRB(16.0, 5, 16, 10),
         itemCount: _tips.length,
         itemBuilder: /*1*/ (context, i) {
-
           return _buildRow(_tips[i]);
         });
   }
@@ -354,7 +351,7 @@ class _RandomWordsState extends State<RandomWords> {
                   style: TextStyle(
                       color: Color(0xFF1A633C),
                       fontWeight: FontWeight.bold,
-                      fontSize: 25),
+                      fontSize: 28),
                 )),
             Padding(
                 padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
