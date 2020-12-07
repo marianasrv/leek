@@ -6,7 +6,7 @@ The Leek App 🍋🥬🍅
 ======================
 [![Issues](	https://img.shields.io/github/issues/gonmelo/leek)](https://github.com/gonmelo/leek/issues)
 [![Forks](https://img.shields.io/github/forks/gonmelo/leek)](https://github.com/gonmelo/leek)
-[![License](https://img.shields.io/github/license/gonmelo/leek)](https://packagist.org/packages/aimeos/aimeos-typo3)
+[![License](https://img.shields.io/github/license/gonmelo/leek)](https://github.com/gonmelo/leek/blob/master/LICENSE)
 
 Welcome to Leek! A platform for vegetable growth, providing tips and tricks, weather alerts, plague identification and much more. Happy farming!
 
