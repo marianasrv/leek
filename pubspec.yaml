@@ -37,8 +37,6 @@ dependencies:
 
   percent_indicator: "^2.1.7+2"
 
-  firebase_ml_vision: ^0.9.10
-
   tflite: ^1.1.1
 
   #picks the image from the camera roll
@@ -48,7 +46,6 @@ dependencies:
   firebase_core: ^0.4.0+9
   cloud_firestore: ^0.12.9+5
 
-  path_provider:
 
   intl: ^0.16.0
 
@@ -69,7 +66,7 @@ flutter:
   assets:
     - images/weather/050-sun.png
     - images/brand/
-    - images/users/carolina.png
+    - images/users/
     - images/crops/
     - assets/labels.txt
     - assets/manifest.json

@@ -25,6 +25,20 @@ class _CalendarState extends State<Calendar> {
         print("Not Found");
       }
     });
+
+    Firestore.instance.collection('users').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        for (int i = 0; i < val.documents.length; i++) {
+          if (val.documents[i].data['name'] == 'Carolina')
+            setState(() {
+              user = (val.documents[i].data);
+              docId = i;
+            });
+        }
+      } else {
+        print("Not Found");
+      }
+    });
   }
 
   TextEditingController editingController = TextEditingController();
@@ -58,6 +72,8 @@ class _CalendarState extends State<Calendar> {
   bool _isHard = false;
   bool _isMonthsOpen = false;
   String name;
+  Map<String, dynamic> user;
+  int docId;
 
   @override
   Widget build(BuildContext context) {
@@ -428,11 +444,13 @@ class _CalendarState extends State<Calendar> {
                                           color: Colors.white, fontSize: 12)),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(18.0),
-                                      side:
-                                          BorderSide(color: Color(0xFF1A633C))),
-                                  color: Color(0xFF1A633C),
+                                      ),
+                                  color: Color(0xFF1A633C).withOpacity(getOpacity(veg['name'])),
                                   onPressed: () {
-                                    Navigator.of(context).pop();
+                                    if (getOpacity(veg['name']) == 1){
+                                      _addToMyCrops(veg);
+                                      Navigator.of(context).pop();
+                                    }
                                   }),
                             ))
                       ])),
@@ -443,6 +461,29 @@ class _CalendarState extends State<Calendar> {
         });
   }
 
+  void _addToMyCrops(Map<String,dynamic> veg) async{
+    Map<String,dynamic> tmp = {};
+    tmp['crop'] = veg['name'];
+    tmp['imgPath'] = veg['imgPath'];
+    tmp['timeToGrow'] = veg['timeToGrow'];
+    tmp['type'] = veg['type'];
+    tmp['plant'] = DateTime.now();
+
+    user['myCrops'] =  user['myCrops'] + [tmp];
+
+
+    QuerySnapshot querySnapshot = await Firestore.instance.collection('users').getDocuments();
+    querySnapshot.documents[docId].reference.updateData(user);
+  }
+
+  double getOpacity(String crop){
+
+    for (int i = 0; i < user['myCrops'].length ; i++){
+      if (user['myCrops'][i]['crop'] == crop)
+        return 0.3;
+    }
+    return 1;
+  }
   void _showcontent() {
     showDialog(
       context: context, barrierDismissible: false, // user must tap button!

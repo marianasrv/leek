@@ -32,8 +32,3 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-
-aaptOptions {
-    noCompress 'tflite'
-    noCompress 'lite'
-}

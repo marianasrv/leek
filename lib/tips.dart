@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class RandomWords extends StatefulWidget {
   @override
@@ -7,8 +9,40 @@ class RandomWords extends StatefulWidget {
 }
 
 class _RandomWordsState extends State<RandomWords> {
+
+  void generalInit(){
+    Firestore.instance.collection('tips').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        for (int i = 0; i < val.documents.length; i++) {
+          setState(() => _tips.add(val.documents[i].data));
+        }
+      } else {
+        print("Not Found");
+      }
+    });
+
+    Firestore.instance.collection('users').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        for (int i = 0; i < val.documents.length; i++) {
+          if (val.documents[i].data['name'] == 'Carolina')
+            setState(() {
+              user =(val.documents[i].data);
+            });
+        }
+      } else {
+        print("Not Found");
+      }
+    });
+  }
+  @override
+  void initState() {
+
+    super.initState();
+    generalInit();
+  }
+
   TextEditingController editingController = TextEditingController();
-  final _suggestions = <WordPair>[];
+  final _suggestions = <String>[];
   final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
   bool _typeHerbs = false;
@@ -17,6 +51,9 @@ class _RandomWordsState extends State<RandomWords> {
   bool _isDisabled = true;
   bool _isMostPopular = false;
   bool _isTrending = false;
+  var _tips = [];
+  String addedTip = "";
+  Map<String, dynamic> user;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +127,11 @@ class _RandomWordsState extends State<RandomWords> {
                                 expands: true,
                                 maxLines: null,
                                 textAlignVertical: TextAlignVertical.top,
+                                onChanged: (value) {
+                                  setState(() {
+                                    addedTip = value;
+                                  });
+                                },
                                 decoration: new InputDecoration(
                                     hintText: "Lettuce know your tips...",
                                     fillColor: Colors.white,
@@ -119,6 +161,13 @@ class _RandomWordsState extends State<RandomWords> {
                                           BorderSide(color: Color(0xFF3FAF73))),
                                   color: Color(0xFF3FAF73),
                                   onPressed: () {
+                                    Map<String, dynamic> tmp = {};
+                                    if (addedTip != ""){
+                                      addTip();
+                                      setState(() {
+                                        addedTip = '';
+                                      });
+                                    }
                                     Navigator.of(context).pop();
                                   }),
                             ))
@@ -130,8 +179,22 @@ class _RandomWordsState extends State<RandomWords> {
         });
   }
 
-  Widget _buildRow(WordPair pair) {
-    final alreadySaved = _saved.contains(pair);
+  void addTip(){
+    Map<String, dynamic> tmp = {};
+    tmp['user'] = user['name'];
+    tmp['imgPath'] = user['imgPath'];
+    tmp['likes'] = 0;
+    tmp['dislikes'] = 0;
+    tmp['content'] = addedTip;
+    tmp['title'] = '';
+    Firestore.instance.collection('tips').add(tmp);
+
+    setState(() => _tips.removeRange(0, _tips.length));
+    generalInit();
+  }
+
+  Widget _buildRow(Map<String, dynamic> tip) {
+    //final alreadySaved = _saved.contains(pair);
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: Card(
@@ -143,11 +206,11 @@ class _RandomWordsState extends State<RandomWords> {
         child: ListTile(
           contentPadding: EdgeInsets.fromLTRB(20, 10, 0, 10),
           leading: CircleAvatar(
-            backgroundColor: Colors.amber,
-            child: Text('MS'),
+            backgroundImage: AssetImage(tip['imgPath']),
+            backgroundColor: Colors.white,
           ),
           title: Text(
-            "This is the tip title. ksdbcaurb cksag fiubcask ud bfciauebc kdsjbvci uaechsv jcdk",
+            tip['content'],
             style: TextStyle(
                 color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w400),
           ),
@@ -156,23 +219,43 @@ class _RandomWordsState extends State<RandomWords> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_upward,
-                  color: Color(0xFF3FAF73),
-                  size: 30,
+              Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+                  IconButton(
+                  icon: Icon(
+                    Icons.arrow_upward,
+                    color: Colors.grey,
+                    size: 30,
+                  ),
+                  onPressed: () {},
                 ),
-                onPressed: () {},
+                Text(tip['likes'].toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF1A633C),
+                      fontSize: 7,
+                    )),
+                ]
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_downward,
-                  color: Colors.grey,
-                  size: 30,
-                ),
-                onPressed: () {},
-              )
-            ],
+              Column(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_downward,
+                      color: Colors.grey,
+                      size: 30,
+                    ),
+                    onPressed: () {},
+                  ),
+                  Text(tip['dislikes'].toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFFA11F12),
+                        fontSize: 7,
+                      )),
+                ]
+              )],
           ),
         ),
       ),
@@ -182,12 +265,10 @@ class _RandomWordsState extends State<RandomWords> {
   Widget _buildSuggestions() {
     return ListView.builder(
         padding: EdgeInsets.fromLTRB(16.0, 5, 16, 10),
+        itemCount: _tips.length,
         itemBuilder: /*1*/ (context, i) {
-          final index = i ~/ 2; /*3*/
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10)); /*4*/
-          }
-          return _buildRow(_suggestions[index]);
+
+          return _buildRow(_tips[i]);
         });
   }
 
@@ -201,7 +282,7 @@ class _RandomWordsState extends State<RandomWords> {
               padding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
               child: TextField(
                 onChanged: (value) {
-                  //filterSearchResults(value);
+                  //
                 },
                 controller: editingController,
                 decoration: InputDecoration(
