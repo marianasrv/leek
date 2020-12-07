@@ -37,12 +37,18 @@ dependencies:
 
   percent_indicator: "^2.1.7+2"
 
+  firebase_ml_vision: ^0.9.10
+
+  tflite: ^1.1.1
+
   #picks the image from the camera roll
   image_picker: ^0.6.6+5
 
   # Adds firebase cloud_firestone to the project
   firebase_core: ^0.4.0+9
   cloud_firestore: ^0.12.9+5
+
+  path_provider:
 
   intl: ^0.16.0
 
@@ -62,9 +68,12 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/weather/050-sun.png
-    - images/brand/logo.png
+    - images/brand/
     - images/users/carolina.png
     - images/crops/
+    - assets/labels.txt
+    - assets/manifest.json
+    - assets/model_unquant.tflite
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

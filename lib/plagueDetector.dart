@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+
 //import 'package:flutter/services.dart';
 import 'dart:io';
+import 'dart:async';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:tflite/tflite.dart';
 
 class PlagueDetector extends StatefulWidget {
   @override
@@ -9,7 +15,38 @@ class PlagueDetector extends StatefulWidget {
 }
 
 class _PlagueDetectorState extends State<PlagueDetector> {
-  File _image;
+  PickedFile _image;
+  bool _isLoading;
+  var _output;
+
+  @override
+  void initState() {
+    super.initState();
+    // final directory = await getApplicationDocumentsDirectory();
+    // final path = directory.path;
+    // print(path);
+    // _image = File('$path/images/brand/folha_test.png');
+    _isLoading = true;
+    loadModel().then((value) {
+      setState() {
+        _isLoading = false;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    Tflite.close();
+    super.dispose();
+  }
+
+  loadModel() async {
+    await Tflite.loadModel(
+        model: "assets/model_unquant.tflite", labels: "assets/labels.txt");
+  }
+
+  // .visionEdgeImageLabeler('CropDisease_2020126165628-2020-12-06T18_10_23');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,12 +81,13 @@ class _PlagueDetectorState extends State<PlagueDetector> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.file(
-                            _image,
+                            File(_image.path),
                             width: 200,
                             fit: BoxFit.fitWidth,
                           ),
                         ),
                       ),
+                      //_output != null ? Text("${_output}") : Container(),
                       //Spacer(),
                       _image == null
                           ? Container()
@@ -72,7 +110,9 @@ class _PlagueDetectorState extends State<PlagueDetector> {
                                     ),
                                   ),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  runModel(_image);
+                                },
                               ),
                             )
                     ],
@@ -141,6 +181,19 @@ class _PlagueDetectorState extends State<PlagueDetector> {
         ));
   }
 
+  runModel(PickedFile image) async {
+    var output = await Tflite.runModelOnImage(
+      path: image.path,
+      threshold: 0.4,
+    );
+    print(output.toString());
+
+    setState(() {
+      _isLoading = false;
+      _output = output;
+    });
+  }
+
   Widget _titleAndProfile() {
     return Container(
         margin: EdgeInsets.only(top: 30),
@@ -176,7 +229,7 @@ class _PlagueDetectorState extends State<PlagueDetector> {
 
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        _image = PickedFile(pickedFile.path);
       } else {
         print('No image selected.');
       }
@@ -184,11 +237,14 @@ class _PlagueDetectorState extends State<PlagueDetector> {
   }
 
   _imgFromGallery() async {
-    File image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50);
+    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+    print(image.path);
 
     setState(() {
+      _isLoading = true;
       _image = image;
     });
+
+    runModel(image);
   }
 }

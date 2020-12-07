@@ -1,0 +1,10 @@
+Corn_healthy
+Cherry_Healthy
+Tomato_Healthy
+Apple_Black_Rot
+Grape_Black_Rot
+Cherry_Powdery_Mildew
+Tomato_Mosaic_Virus
+Apple_Healthy
+Corn_Common_Rust
+Grape_Healthy
