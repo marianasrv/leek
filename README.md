@@ -31,6 +31,7 @@ Welcome to Leek! A platform for vegetable growth, providing tips and tricks, wea
 ##  🚀 Getting Started
 
 </a>
+
 1. Follow the steps (1) and (2) of [Getting Started with Flutter](https://flutter.dev/docs/get-started/) to install flutter and setup an editor.
 2. Download the project [here!](https://github.com/gonmelo/leek/archive/master.zip) and unzip at a desired directory.
 3. In the root folder of the project run:
