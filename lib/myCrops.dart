@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:leek/data/Crop.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,6 +32,15 @@ class _CropsState extends State<Crops> {
         }
       }
     });
+    Firestore.instance.collection('crops').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        setState(() {
+          allCrops = val.documents.toList();
+        });
+      } else {
+        print("Not Found");
+      }
+    });
   }
 
   @override
@@ -39,7 +49,6 @@ class _CropsState extends State<Crops> {
     generalInit();
   }
 
-  TextEditingController editingController = TextEditingController();
   List<String> listHeader = ['Fruits', 'Vegetables', 'Herbs'];
 
   final _biggerFont = TextStyle(fontSize: 18.0);
@@ -47,6 +56,7 @@ class _CropsState extends State<Crops> {
   var fruits = [];
   var herbs = [];
   var crops = [];
+  var allCrops = [];
   Map<String, dynamic> user;
   int docId;
 
@@ -458,27 +468,10 @@ class _CropsState extends State<Crops> {
                                 },
                               )
                             ]),
-                        Container(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                            child: TextField(
-                              onChanged: (value) {
-                                //filterSearchResults(value);
-                              },
-                              controller: editingController,
-                              decoration: InputDecoration(
-                                  isDense: true,
-                                  hintText: "Search...",
-                                  prefixIcon: Icon(Icons.search),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(25.0)))),
-                            ),
-                          ),
-                        ),
-                        //Expanded(
-                        // flex: 3,
-                        _resultCrop(),
+
+                        Expanded(
+                            child: MyDialogContent(crops: allCrops), flex: 2)
+
                         //),
                       ])),
               shape: RoundedRectangleBorder(
@@ -487,47 +480,128 @@ class _CropsState extends State<Crops> {
           });
         });
   }
+}
 
-  Widget _resultCrop() {
-    return Card(
-        elevation: 5,
-        margin: const EdgeInsets.fromLTRB(4, 10, 4, 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: ListTile(
-          dense: true,
-          contentPadding: const EdgeInsets.all(4),
-          leading: Image.asset(
-            'images/weather/050-sun.png',
-            width: 40,
-            fit: BoxFit.fitWidth,
+class MyDialogContent extends StatefulWidget {
+  MyDialogContent({this.crops});
+
+  final crops;
+
+  @override
+  _MyDialogContentState createState() => new _MyDialogContentState();
+}
+
+class _MyDialogContentState extends State<MyDialogContent> {
+  TextEditingController editingController = TextEditingController();
+  var items = [];
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  String convertGrowthTime(int days) {
+    if (days < 30) {
+      return days.toString() + " days";
+    } else if (days < 365) {
+      var month = days ~/ 30;
+      return month == 1
+          ? month.toString() + " month"
+          : (days ~/ 30).toString() + " months";
+    } else {
+      return "over 1 year";
+    }
+  }
+
+  void filterSearchResults(value) {
+    print(value);
+
+    setState(() => items = []);
+
+    for (int i = 0; i < widget.crops.length; i++) {
+      if (value.isEmpty) {
+        break;
+      }
+      if (widget.crops[i].data['name']
+          .toString()
+          .toLowerCase()
+          .startsWith(value.toString())) {
+        setState(() => items.add(widget.crops[i].data));
+      }
+    }
+    print("items");
+    print(items);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+        child: TextField(
+          onChanged: (value) {
+            filterSearchResults(value);
+          },
+          controller: editingController,
+          decoration: InputDecoration(
+            isDense: true,
+            hintText: "Search...",
+            prefixIcon: Icon(Icons.search),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(25.0))),
           ),
-          title: Text('Parsley',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1A633C),
-                fontSize: 16,
-              )),
-          subtitle: Text(
-            '3 months',
-            style: TextStyle(
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF1A633C),
-                fontSize: 12),
-          ),
-          trailing: FlatButton(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                color: Color(0xFF1A633C),
-                padding: EdgeInsets.all(6),
-                child: Text(
-                  'Add to my crops',
-                  style: TextStyle(color: Colors.white, fontSize: 11),
-                ),
-              ),
-            ),
-            onPressed: () {},
-          ),
-        ));
+        ),
+      ),
+      items.isEmpty
+          ? Container()
+          : Expanded(
+              child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                        elevation: 5,
+                        margin: const EdgeInsets.fromLTRB(4, 10, 4, 10),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: ListTile(
+                          dense: true,
+                          contentPadding: const EdgeInsets.all(4),
+                          leading: Image.asset(
+                            items[index]['imgPath'],
+                            width: 40,
+                            fit: BoxFit.fitWidth,
+                          ),
+                          title: Text(items[index]['name'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF1A633C),
+                                fontSize: 15,
+                              )),
+                          subtitle: Text(
+                            convertGrowthTime(items[index]['timeToGrow']),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xFF1A633C),
+                                fontSize: 12),
+                          ),
+                          trailing: FlatButton(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                color: Color(0xFF1A633C),
+                                padding: EdgeInsets.all(6),
+                                child: Text(
+                                  'Add to my crops',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 11),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {},
+                          ),
+                        ));
+                  }),
+              flex: 3,
+            )
+    ]);
   }
 }
