@@ -22,6 +22,11 @@ class _CropsState extends State<Crops> {
       } else {
         print("Not Found");
       }
+      setState(() => {
+            fruits = [],
+            herbs = [],
+            vegetables = [],
+          });
       for (int i = 0; i < crops.length; i++) {
         if (crops[i]['type'] == 'fruit') {
           setState(() => fruits.add(crops[i]));
@@ -465,12 +470,16 @@ class _CropsState extends State<Crops> {
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
+                                  generalInit();
                                 },
                               )
                             ]),
 
                         Expanded(
-                            child: MyDialogContent(crops: allCrops), flex: 2)
+                            child: MyDialogContent(
+                              allCrops: allCrops,
+                            ),
+                            flex: 2)
 
                         //),
                       ])),
@@ -483,9 +492,9 @@ class _CropsState extends State<Crops> {
 }
 
 class MyDialogContent extends StatefulWidget {
-  MyDialogContent({this.crops});
+  MyDialogContent({this.allCrops});
 
-  final crops;
+  final allCrops;
 
   @override
   _MyDialogContentState createState() => new _MyDialogContentState();
@@ -493,10 +502,29 @@ class MyDialogContent extends StatefulWidget {
 
 class _MyDialogContentState extends State<MyDialogContent> {
   TextEditingController editingController = TextEditingController();
-  var items = [];
+  var filteredCrops = [];
+  Map<String, dynamic> user;
+  int docId;
+  void generalInit() {
+    Firestore.instance.collection('users').getDocuments().then((val) {
+      if (val.documents.length > 0) {
+        for (int i = 0; i < val.documents.length; i++) {
+          if (val.documents[i].data['name'] == 'Carolina')
+            setState(() {
+              user = (val.documents[i].data);
+              docId = i;
+            });
+        }
+      } else {
+        print("Not Found");
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    generalInit();
   }
 
   String convertGrowthTime(int days) {
@@ -515,21 +543,44 @@ class _MyDialogContentState extends State<MyDialogContent> {
   void filterSearchResults(value) {
     print(value);
 
-    setState(() => items = []);
+    setState(() => filteredCrops = []);
 
-    for (int i = 0; i < widget.crops.length; i++) {
+    for (int i = 0; i < widget.allCrops.length; i++) {
       if (value.isEmpty) {
         break;
       }
-      if (widget.crops[i].data['name']
+      if (widget.allCrops[i].data['name']
           .toString()
           .toLowerCase()
           .startsWith(value.toString())) {
-        setState(() => items.add(widget.crops[i].data));
+        setState(() => filteredCrops.add(widget.allCrops[i].data));
       }
     }
     print("items");
-    print(items);
+    print(filteredCrops);
+  }
+
+  double getOpacity(String crop) {
+    for (int i = 0; i < user['myCrops'].length; i++) {
+      if (user['myCrops'][i]['crop'] == crop) return 0.3;
+    }
+    return 1;
+  }
+
+  void _addToMyCrops(Map<String, dynamic> veg) async {
+    Map<String, dynamic> tmp = {};
+    tmp['crop'] = veg['name'];
+    tmp['imgPath'] = veg['imgPath'];
+    tmp['timeToGrow'] = veg['timeToGrow'];
+    tmp['type'] = veg['type'];
+    tmp['plant'] = DateTime.now();
+
+    user['myCrops'] = user['myCrops'] + [tmp];
+
+    QuerySnapshot querySnapshot =
+        await Firestore.instance.collection('users').getDocuments();
+    querySnapshot.documents[docId].reference.updateData(user);
+    generalInit();
   }
 
   @override
@@ -551,11 +602,11 @@ class _MyDialogContentState extends State<MyDialogContent> {
           ),
         ),
       ),
-      items.isEmpty
+      filteredCrops.isEmpty
           ? Container()
           : Expanded(
               child: ListView.builder(
-                  itemCount: items.length,
+                  itemCount: filteredCrops.length,
                   itemBuilder: (context, index) {
                     return Card(
                         elevation: 5,
@@ -566,18 +617,19 @@ class _MyDialogContentState extends State<MyDialogContent> {
                           dense: true,
                           contentPadding: const EdgeInsets.all(4),
                           leading: Image.asset(
-                            items[index]['imgPath'],
+                            filteredCrops[index]['imgPath'],
                             width: 40,
                             fit: BoxFit.fitWidth,
                           ),
-                          title: Text(items[index]['name'],
+                          title: Text(filteredCrops[index]['name'],
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF1A633C),
                                 fontSize: 15,
                               )),
                           subtitle: Text(
-                            convertGrowthTime(items[index]['timeToGrow']),
+                            convertGrowthTime(
+                                filteredCrops[index]['timeToGrow']),
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Color(0xFF1A633C),
@@ -587,16 +639,25 @@ class _MyDialogContentState extends State<MyDialogContent> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               child: Container(
-                                color: Color(0xFF1A633C),
-                                padding: EdgeInsets.all(6),
+                                color: Color(0xFF1A633C).withOpacity(
+                                    getOpacity(filteredCrops[index]['name'])),
+                                padding: EdgeInsets.fromLTRB(12, 6, 12, 6),
                                 child: Text(
-                                  'Add to my crops',
+                                  getOpacity(filteredCrops[index]['name']) == 1
+                                      ? 'Add'
+                                      : 'Added',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 11),
                                 ),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              if (getOpacity(filteredCrops[index]['name']) ==
+                                  1) {
+                                _addToMyCrops(filteredCrops[index]);
+                                //Navigator.of(context).pop();
+                              }
+                            },
                           ),
                         ));
                   }),
