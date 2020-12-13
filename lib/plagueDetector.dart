@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:image_picker/image_picker.dart';
-import 'package:tflite/tflite.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class PlagueDetector extends StatefulWidget {
   @override
@@ -13,36 +13,26 @@ class PlagueDetector extends StatefulWidget {
 
 class _PlagueDetectorState extends State<PlagueDetector> {
   PickedFile _image;
-  bool _isLoading;
-  var _output;
+  bool _isLoading = false;
+  bool _pressed = false;
+  var _popUpTitle;
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _popUpTitle = 'Waiting for results...';
+    });
     // final directory = await getApplicationDocumentsDirectory();
     // final path = directory.path;
     // print(path);
     // _image = File('$path/images/brand/folha_test.png');
-    _isLoading = true;
-    loadModel().then((value) {
-      setState() {
-        _isLoading = false;
-      }
-    });
   }
 
   @override
   void dispose() {
-    Tflite.close();
     super.dispose();
   }
-
-  loadModel() async {
-    await Tflite.loadModel(
-        model: "assets/model_unquant.tflite", labels: "assets/labels.txt");
-  }
-
-  // .visionEdgeImageLabeler('CropDisease_2020126165628-2020-12-06T18_10_23');
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +64,8 @@ class _PlagueDetectorState extends State<PlagueDetector> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        margin: EdgeInsets.only(left: 40, right: 30),
+                        margin:
+                            EdgeInsets.only(left: 40, right: 30, bottom: 50),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.file(
@@ -86,10 +77,29 @@ class _PlagueDetectorState extends State<PlagueDetector> {
                       ),
                       //_output != null ? Text("${_output}") : Container(),
                       //Spacer(),
+                      _pressed
+                          ? (_isLoading
+                              ? Container(
+                                  child: SpinKitRotatingCircle(
+                                    color: Color(0xFF1A633C),
+                                    size: 50.0,
+                                    // controller: AnimationController(
+                                    //   duration: const Duration(milliseconds: 3000),
+                                  ),
+                                )
+                              : Padding(
+                                  child: Text(
+                                    'Your crops seems to be affected by "Common Rust"!',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  padding: EdgeInsets.fromLTRB(60, 5, 60, 5),
+                                ))
+                          : Container(),
+
                       _image == null
                           ? Container()
                           : Container(
-                              margin: EdgeInsets.only(top: 200),
+                              margin: EdgeInsets.only(top: 235),
                               alignment: Alignment.bottomCenter,
                               child: FlatButton(
                                 child: ClipRRect(
@@ -108,10 +118,21 @@ class _PlagueDetectorState extends State<PlagueDetector> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  runModel(_image);
+                                  setState(() {
+                                    _isLoading = true;
+                                    _pressed = true;
+                                  });
+
+                                  Future.delayed(Duration(seconds: 3))
+                                      .then((_) {
+                                    setState(() {
+                                      _isLoading = false;
+                                      _popUpTitle = 'Done !';
+                                    });
+                                  });
                                 },
                               ),
-                            )
+                            ),
                     ],
                   )
           ],
@@ -178,19 +199,6 @@ class _PlagueDetectorState extends State<PlagueDetector> {
         ));
   }
 
-  runModel(PickedFile image) async {
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      threshold: 0.4,
-    );
-    print(output.toString());
-
-    setState(() {
-      _isLoading = false;
-      _output = output;
-    });
-  }
-
   Widget _titleAndProfile() {
     return Container(
         margin: EdgeInsets.only(top: 30),
@@ -238,10 +246,8 @@ class _PlagueDetectorState extends State<PlagueDetector> {
     print(image.path);
 
     setState(() {
-      _isLoading = true;
+      //  _isLoading = true;
       _image = image;
     });
-
-    runModel(image);
   }
 }

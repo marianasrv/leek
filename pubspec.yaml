@@ -46,6 +46,7 @@ dependencies:
   firebase_core: ^0.4.0+9
   cloud_firestore: ^0.12.9+5
 
+  flutter_spinkit: "^4.1.2"
 
   intl: ^0.16.0
 
@@ -68,9 +69,6 @@ flutter:
     - images/brand/
     - images/users/
     - images/crops/
-    - assets/labels.txt
-    - assets/manifest.json
-    - assets/model_unquant.tflite
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
